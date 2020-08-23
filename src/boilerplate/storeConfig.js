@@ -16,7 +16,7 @@ const logger = store => next => action => {
 
 // apply middleWares
 const middleWares = [reduxThunk];
-if (process.env.REACT_APP_NODE_ENV === 'development') middleWares.push(logger);
+if (process.env.NODE_ENV === 'development') middleWares.push(logger);
 // create store
 const store = createStore(rootReducer, applyMiddleware(...middleWares));
 
