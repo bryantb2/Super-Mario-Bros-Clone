@@ -11,11 +11,18 @@ const scoreboardTypes = {
     ADD_COINS: 'ADD_COINS',
     RESET_COINS: 'WIPE_COINS',
     // level timing actions
-    MARK_LEVEL_START_TIME: 'MARK_LEVEL_START_TIME',
+    START_LEVEL_TIMER: 'START_LEVEL_TIMER',
+    DECREMENT_TIMER: 'DECREMENT_TIMER',
     RESET_LEVEL_TIMER: 'RESET_LEVEL_TIMER',
     // total scoreboard action
     RESET_ENTIRE_SCOREBOARD: 'RESET_ENTIRE_SCOREBOARD'
 };
 
+const levelTypes = {
+    // world actions
+    SET_CURRENT_WORLD: 'SET_CURRENT_WORLD',
+    SET_CURRENT_LEVEL: 'SET_CURRENT_LEVEL'
+};
+
 // merged type object
-export default {...scoreboardTypes};
+export default {...scoreboardTypes, ...levelTypes};
