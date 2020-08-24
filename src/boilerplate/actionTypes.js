@@ -1,6 +1,6 @@
 // redux types
 const scoreboardTypes = {
-    // scoreboard actions
+    // points actions
     ADD_POINT_SCORE: 'ADD_POINT_SCORE',
     RESET_POINT_SCORE: 'RESET_POINT_SCORE',
     // life actions
@@ -12,7 +12,9 @@ const scoreboardTypes = {
     RESET_COINS: 'WIPE_COINS',
     // level timing actions
     MARK_LEVEL_START_TIME: 'MARK_LEVEL_START_TIME',
-    RESET_LEVEL_TIMER: 'RESET_LEVEL_TIMER'
+    RESET_LEVEL_TIMER: 'RESET_LEVEL_TIMER',
+    // total scoreboard action
+    RESET_ENTIRE_SCOREBOARD: 'RESET_ENTIRE_SCOREBOARD'
 };
 
 // merged type object

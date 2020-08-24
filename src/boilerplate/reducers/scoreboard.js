@@ -4,7 +4,7 @@ const initialState = {
     points: 0,
     lives: 4,
     coins: 0,
-    levelTimer: null
+    levelTimer: 400 // in seconds
 };
 
 export default (state = initialState, action) => {
@@ -31,7 +31,10 @@ export default (state = initialState, action) => {
         case actionTypes.MARK_LEVEL_START_TIME:
             newState.levelTimer = Date.now();
         case actionTypes.RESET_LEVEL_TIMER:
-            newState.levelTimer = null;
+            newState.levelTimer = 400;
+        // entire score board
+        case actionTypes.RESET_ENTIRE_SCOREBOARD:
+            return initialState;
         default:
             return newState;
     }
