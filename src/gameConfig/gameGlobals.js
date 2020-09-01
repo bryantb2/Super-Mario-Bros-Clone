@@ -1,10 +1,17 @@
+export const gameGrid = {
+    RENDERABLE_HEIGHT: 13,
+    RENDERABLE_WIDTH:  15, // DO NOT PUT ANY RENDERABLE BLOCKS PAST THIS POINT
+    ACTUAL_WIDTH:      38,
+    ACTUAL_HEIGHT:     25
+};
+
 export const baseUnitSize = {
     WIDTH:  '25',
     HEIGHT: '30',
     UNITS:  'px'
 };
 
-export const player_data = {
+export const playerData = {
     // height / width values are values multiplied relative to base units object
     SMALL_PLAYER_HEIGHT:    1,
     SMALL_PLAYER_WIDTH:     0.75,
@@ -22,12 +29,13 @@ export const player_data = {
 
 // game tile objects that are rendered at start
 export const tileIDs = {
-    WOOD:           'WOOD',
+    BRICK:          'BRICK',
     MYSTERY_BOX:    'MYSTERY_BOX',
     STAIRS_BRICK:   'STAIRS_BRICK',
     RIVETED_BRICK:  'RIVETED_BRICK',
     FLOOR_BRICK:    'FLOOR_BRICK',
-    PIPE:           'PIPE'
+    PIPE:           'PIPE',
+    NOTHING:         null
 };
 
 // objects Mario interacts with and gains power from
@@ -60,10 +68,9 @@ export const worldAndLevelIDs = {
     WORLD_6: 'WORLD_6',
     WORLD_7: 'WORLD_7',
     WORLD_8: 'WORLD_8',
-    // levels
+    // levels (4 per world)
     LEVEL_1: 'LEVEL_1',
     LEVEL_2: 'LEVEL_2',
     LEVEL_3: 'LEVEL_3',
     LEVEL_4: 'LEVEL_4'
 };
-
