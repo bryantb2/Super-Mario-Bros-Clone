@@ -1,4 +1,10 @@
-import { worldAndLevelIDs as levelIDs, tileIDs, gameGrid } from './gameGlobals';
+import {
+    worldAndLevelIDs as levelIDs,
+    tileIDs,
+    itemIDs,
+    gameGrid,
+    Material
+} from './';
 
 // level matrix is a row/column system, with the first element of the sub-array being the top of the level
 export const gameLevels = [
@@ -409,7 +415,7 @@ export const gameLevels = [
 ];
 
 // meant to generate a full (uncompressed) tile ID array
-export const generateLevel = (compressedTileArr) => (
+export const generateMaterialGrid = (compressedTileArr) => (
     // go through each column
     buildGridStructure().map((columnArr, columnIndex) => {
         // make copy of column and then loop through contents
@@ -422,12 +428,46 @@ export const generateLevel = (compressedTileArr) => (
                 // incorporate interactive level data from block array
                 const customBlock = findLevelDataByIndexes(compressedTileArr, columnIndex, rowIndex);
                 if (customBlock !== undefined)
-                    newColumn[columnIndex][rowIndex] = customBlock;
+                    newColumn[columnIndex][rowIndex] = customBlock.materialId;
             }
         });
         return newColumn;
     })
-);
+    // map each individual tile to full material object
+    .map(columnArr =>
+        columnArr.map(tile => createMaterialById(tile))));
+
+const createMaterialById = (materialId) => {
+    // randomize interactivity
+    const isInteractive = getNumberBetween(0, 1) === 0 ? false : true;
+    let material;
+    if (isInteractive) {
+        // generate destroy and hit rewards (since interactive)
+        const hitRewardIndex = getNumberBetween(0, Object.values(itemIDs).length);
+        const destroyRewardIndex = getNumberBetween(0, Object.values(itemIDs).length);
+        const maxHitCount = getNumberBetween(1, 5);
+        material = new Material(
+            materialId,
+            maxHitCount > 1 ? itemIDs.COIN : Object.values(itemIDs)[hitRewardIndex],
+            hitRewardIndex === destroyRewardIndex ? tileIDs.NOTHING  : Object.values(itemIDs)[destroyRewardIndex],
+            false,
+            true,
+            maxHitCount
+        );
+    } else {
+        material = new Material(
+            materialId,
+            itemIDs.NOTHING,
+            itemIDs.NOTHING,
+            false,
+            false,
+            0
+        );
+    }
+    return material;
+};
+
+const getNumberBetween = (min, max) => Math.random() * (max - min) + min;
 
 // takes in a row and column index, searches the tile array for block with specified indexes
 const findLevelDataByIndexes = (tileArr, columnIndex, rowIndex) => (

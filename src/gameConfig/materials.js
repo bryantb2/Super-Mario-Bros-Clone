@@ -7,12 +7,12 @@ export class Material {
         hitRewardId,
         destroyRewardId,
         isLethal,
-        interactable,
+        interactive,
         maxHitCount
     ) {
         this.objectId = guidGenerator();
         this.initialMaterialId = initialMaterialId;
-        this.interactable = interactable;
+        this.interactable = interactive;
         this.lethal = isLethal;
         this.hitCount = 0;
         this.maxHitCount = maxHitCount;

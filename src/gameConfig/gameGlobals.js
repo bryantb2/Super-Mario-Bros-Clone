@@ -53,7 +53,9 @@ export const itemIDs = {
     GREEN_MUSHROOM: 'GREEN_MUSHROOM',
     RED_MUSHROOM:   'RED_MUSHROOM',
     POWER_FLOWER:   'POWER_FLOWER',
-    SUPER_STAR:     'SUPER_STAR'
+    SUPER_STAR:     'SUPER_STAR',
+    COIN:           'COIN',
+    NOTHING:         null
 };
 
 // enemy AI
@@ -64,7 +66,6 @@ export const entityIDs = {
 
 // passive items
 export const passiveDisplayItemIDs = {
-    COIN:  'COIN',
     SCORE: 'SCORE'
 };
 
