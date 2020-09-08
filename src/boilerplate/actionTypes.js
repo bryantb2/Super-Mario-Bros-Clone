@@ -24,5 +24,17 @@ const levelTypes = {
     SET_CURRENT_LEVEL: 'SET_CURRENT_LEVEL'
 };
 
+const gameplayTypes = {
+    // position actions
+    SET_PLAYER_POSITION: 'SET_PLAYER_POSITION',
+    RESET_PLAYER_POSITION: 'RESET_PLAYER_POSITION',
+    // player size actions
+    SET_PLAYER_SIZE: 'SET_PLAYER_SIZE',
+    RESET_PLAYER_SIZE: 'RESET_PLAYER_SIZE',
+    // powerup actions
+    SET_PLAYER_UPGRADE: 'SET_PLAYER_UPGRADE',
+    RESET_PLAYER_UPGRADE: 'RESET_PLAYER_UPGRADE'
+};
+
 // merged type object
-export default {...scoreboardTypes, ...levelTypes};
+export default {...scoreboardTypes, ...levelTypes, ...gameplayTypes};

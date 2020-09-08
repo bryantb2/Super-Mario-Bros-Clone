@@ -31,7 +31,9 @@ export const playerData = {
     JUMP_DISTANCE_STANDING: 0,
     JUMP_DISTANCE_WALKING:  4.75,
     JUMP_DISTANCE_RUNNING:  8.5,
-    JUMP_DISTANCE_SPRINT:   11.5
+    JUMP_DISTANCE_SPRINT:   11.5,
+    SMALL_MARIO: 'SMALL_MARIO',
+    SUPER_MARIO: 'SUPER_MARIO'
 };
 
 // game tile objects that are rendered at start
