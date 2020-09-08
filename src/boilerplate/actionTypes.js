@@ -21,7 +21,8 @@ const scoreboardTypes = {
 const levelTypes = {
     // world actions
     SET_CURRENT_WORLD: 'SET_CURRENT_WORLD',
-    SET_CURRENT_LEVEL: 'SET_CURRENT_LEVEL'
+    SET_CURRENT_LEVEL: 'SET_CURRENT_LEVEL',
+    RESET_LEVEL_WORLD: 'RESET_LEVEL_WORLD'
 };
 
 const gameplayTypes = {
