@@ -1,14 +1,21 @@
 export const gameGrid = {
-    RENDERABLE_HEIGHT: 13,
-    RENDERABLE_WIDTH:  15, // DO NOT PUT ANY RENDERABLE BLOCKS PAST THIS POINT
-    ACTUAL_WIDTH:      38,
-    ACTUAL_HEIGHT:     25
+    RENDERABLE_HEIGHT:  13, // THIS ONLY INCLUDES THE NON-CONSTANT LEVEL BLOCKS, LIKE MYS. BOXES AND PIPES
+    RENDERABLE_WIDTH:   16, // DO NOT PUT ANY RENDERABLE BLOCKS PAST THIS POINT
+    INTERACTIVE_WIDTH:  38,
+    INTERACTIVE_HEIGHT: 25,
+    GRID_WIDTH:         250
 };
 
 export const baseUnitSize = {
     WIDTH:  '25',
     HEIGHT: '30',
     UNITS:  'px'
+};
+
+export const animationTypes = {
+    HIT_ANIMATION:      'HIT_ANIMATION', // swells occur when a player interacts with a material
+    BASE_ANIMATION:     'BASE_ANIMATION', // frame loops are infinite and are only interrupted by player interactions
+    DESTROY_ANIMATION:  'DESTROY_ANIMATION' // transitions are animations that occur once when a material is being destroyed
 };
 
 export const playerData = {
@@ -29,13 +36,16 @@ export const playerData = {
 
 // game tile objects that are rendered at start
 export const tileIDs = {
-    BRICK:          'BRICK',
-    MYSTERY_BOX:    'MYSTERY_BOX',
-    STAIRS_BRICK:   'STAIRS_BRICK',
-    RIVETED_BRICK:  'RIVETED_BRICK',
-    FLOOR_BRICK:    'FLOOR_BRICK',
-    PIPE:           'PIPE',
-    NOTHING:         null
+    BRICK:              'BRICK',
+    MYSTERY_BOX:        'MYSTERY_BOX',
+    STAIRS_BRICK:       'STAIRS_BRICK',
+    // RIVETED_BRICK:      'RIVETED_BRICK',
+    FLOOR_BRICK:        'FLOOR_BRICK',
+    PIPE_TOP_LEFT:      'PIPE_TOP_LEFT',
+    PIPE_SHAFT_LEFT:    'PIPE_SHAFT_LEFT',
+    PIPE_TOP_RIGHT:     'PIPE_TOP_RIGHT',
+    PIPE_SHAFT_RIGHT:   'PIPE_SHAFT_RIGHT',
+    NOTHING:             null
 };
 
 // objects Mario interacts with and gains power from
@@ -60,6 +70,7 @@ export const passiveDisplayItemIDs = {
 
 export const worldAndLevelIDs = {
     // worlds
+    TEST_WORLD: 'TEST_WORLD',
     WORLD_1: 'WORLD_1',
     WORLD_2: 'WORLD_2',
     WORLD_3: 'WORLD_3',
