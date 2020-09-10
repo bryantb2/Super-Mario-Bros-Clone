@@ -1,4 +1,4 @@
-/*import React from 'react';
+import React from 'react';
 import {
     Overview,
     MarioIcon
@@ -11,5 +11,5 @@ export const LevelOverview = props => (
             <MarioIcon /> X {props.playerLives}
         </div>
     </Overview>
-);*/
+);
 

@@ -2,16 +2,16 @@ import React from 'react';
 import ScoreBoard from "./ScoreBoard";
 import {
     FrameContent,
-    FrameContainer
+    Frame
 } from "../elements";
 import { LevelOverview } from '../components';
 
 export default (props) => (
-    <FrameContainer>
+    <Frame>
         <FrameContent>
             <ScoreBoard />
             <LevelOverview />
         </FrameContent>
         {props.children}
-    </FrameContainer>
+    </Frame>
 );

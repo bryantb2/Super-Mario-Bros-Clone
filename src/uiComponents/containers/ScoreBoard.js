@@ -5,10 +5,10 @@ import {
     CoinCounter,
     CurrentLevel
 } from "../components";
-import { ScoreBoardContainer } from "../elements";
+import { Scoreboard } from "../elements";
 
 export default (props) => (
-    <ScoreBoardContainer style={{...props.style}}>
+    <Scoreboard style={{...props.style}}>
         <GameScore gameScore={props.gameScore} />
         <CoinCounter coinCount={props.coinCount}/>
         <CurrentLevel
@@ -16,5 +16,5 @@ export default (props) => (
             levelNumber={props.levelNumber}
         />
         <GameTime gameTime={props.gameTime} />
-    </ScoreBoardContainer>
+    </Scoreboard>
 );

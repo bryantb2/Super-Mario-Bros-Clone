@@ -6,7 +6,7 @@ export const CoinIcon = Styled.img`
     object-fit: contain;
 `;
 
-export const ScoreBoardContainer = Styled.div`
+export const Scoreboard = Styled.div`
     display: flex;
     width: 100%;
     justify-content: space-between;
@@ -20,8 +20,4 @@ export const ItemContainer = Styled.div`
     flex-direction: vertical;
     justify-content: space-between;
     align-items: bottom;
-`;
-
-export const ScoreItem = Styled.div`
-    text-transform: uppercase;
 `;
