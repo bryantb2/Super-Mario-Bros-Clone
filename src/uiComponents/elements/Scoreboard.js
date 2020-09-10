@@ -6,10 +6,13 @@ export const CoinIcon = Styled.img`
     object-fit: contain;
 `;
 
-export const ScoreBoardContainer = styled.div`
+export const ScoreBoardContainer = Styled.div`
     display: flex;
+    width: 100%;
     justify-content: space-between;
     margin-top: 2rem;
+    background-color: transparent;
+    margin-bottom: 5rem;
 `;
 
 export const ItemContainer = Styled.div`

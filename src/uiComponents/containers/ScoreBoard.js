@@ -7,8 +7,8 @@ import {
 } from "../components";
 import { ScoreBoardContainer } from "../elements";
 
-export const Scoreboard = props => (
-    <ScoreBoardContainer>
+export default (props) => (
+    <ScoreBoardContainer style={{...props.style}}>
         <GameScore gameScore={props.gameScore} />
         <CoinCounter coinCount={props.coinCount}/>
         <CurrentLevel
