@@ -2,10 +2,12 @@ import Styled from 'styled-components';
 import BackgroundImg from '../../assets/menu/menuBackground.png';
 
 export const MenuImage = Styled.img`
-    width: 90%;
-    height: auto;
+    width: auto;
+    height: 400px;
     object-fit: cover;
 `;
+
+export const ModeText = Styled.p``;
 
 export const ModeCursor = Styled.img`
     visibility: hidden;
@@ -15,8 +17,6 @@ export const ModeCursor = Styled.img`
         visibility: visible;
     }
 `;
-
-export const ModeText = Styled.p``;
 
 export const Selector = Styled.div`
     display: flex:
@@ -29,7 +29,7 @@ export const SelectorContainer = Styled.div`
 
 export const MenuContainer = Styled.div`
     height: 100%;
-    width: 90%;
+    width: 100%;
     background-image: url(${BackgroundImg});
     background-repeat: no-repeat;
     background-size: cover;

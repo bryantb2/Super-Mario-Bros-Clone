@@ -2,9 +2,10 @@ import React from 'react';
 import { MenuBanner, SelectionItem, TopScore } from "../components/MainMenu";
 import { SelectorContainer } from "../elements";
 import { routes, playerParams } from "../../boilerplate/Routes";
+import { MenuContainer } from "../elements";
 
-export default props => (
-    <>
+export default (props) => (
+    <MenuContainer>
         <MenuBanner />
         <SelectorContainer>
             <SelectionItem
@@ -17,5 +18,5 @@ export default props => (
             />
         </SelectorContainer>
         <TopScore score={0} />
-    </>
+    </MenuContainer>
 );

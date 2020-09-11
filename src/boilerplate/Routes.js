@@ -16,11 +16,13 @@ export const playerParams = {
     TWO_PLAYERS: 'twoPlayers'
 };
 
+// todo: check if array of paths can be used
 const AppRoutes = props => (
     <Router>
         <Routes>
             <Route path={routes.MAIN_MENU} element={<MainMenu />} />
-            <Route path={[routes.GAME, routes.GAME_PLAYER_NUM]} element={<Game />} />
+            <Route path={routes.GAME} element={<Game />} />
+            <Route path={routes.GAME_PLAYER_NUM} element={<Game />} />
             <Route path={routes.ABOUT} element={<AboutPage />} />
         </Routes>
     </Router>

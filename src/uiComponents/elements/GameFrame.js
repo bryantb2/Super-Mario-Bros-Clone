@@ -12,8 +12,9 @@ export const Frame = Styled.div`
 
 export const FrameContent = Styled.div`
     position: absolute;
-    width: 90%;
+    width: 100%;
     top: 0;
     left: 50%;
+    transform: translateX(-50%);
     background-color: transparent;
 `;

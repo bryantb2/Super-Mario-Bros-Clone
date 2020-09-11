@@ -9,7 +9,13 @@ import { LevelOverview } from '../components';
 export default (props) => (
     <Frame>
         <FrameContent>
-            <ScoreBoard />
+            <ScoreBoard
+                gameScore={0}
+                coinCount={0}
+                worldNumber={1}
+                levelNumber={1}
+                gameTime={400}
+            />
             <LevelOverview />
         </FrameContent>
         {props.children}
