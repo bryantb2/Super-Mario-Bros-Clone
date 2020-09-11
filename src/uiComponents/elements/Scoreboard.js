@@ -9,7 +9,7 @@ export const CoinIcon = Styled.img`
 export const Scoreboard = Styled.div`
     display: flex;
     width: 100%;
-    justify-content: space-between;
+    justify-content: center;
     margin-top: 2rem;
     background-color: transparent;
     margin-bottom: 5rem;
@@ -17,7 +17,8 @@ export const Scoreboard = Styled.div`
 
 export const ItemContainer = Styled.div`
     display: flex;
-    flex-direction: vertical;
+    flex-direction: column;
     justify-content: space-between;
     align-items: bottom;
+    margin-right: 15rem;
 `;

@@ -7,27 +7,32 @@ export const MenuImage = Styled.img`
     object-fit: cover;
 `;
 
-export const ModeText = Styled.p``;
-
 export const ModeCursor = Styled.img`
     visibility: hidden;
     width: 20px;
-    height: 20px; 
-    ${ModeText}:hover {
-        visibility: visible;
-    }
+    height: 20px;
+    margin-right: 1rem;
 `;
 
 export const Selector = Styled.div`
-    display: flex:
-    justify-content: space-around;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    &:hover ${ModeCursor} {
+        visibility: visible !important;
+    }
 `;
 
 export const SelectorContainer = Styled.div`
     margin-bottom: 2rem;
 `;
 
-export const MenuContainer = Styled.div`
+export const MenuContainer = Styled.div``;
+
+export const MenuPageContainer = Styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
     height: 100%;
     width: 100%;
     background-image: url(${BackgroundImg});
