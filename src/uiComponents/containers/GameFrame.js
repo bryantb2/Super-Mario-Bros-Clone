@@ -4,7 +4,6 @@ import {
     FrameContent,
     Frame
 } from "../elements";
-import { LevelOverview } from '../components';
 
 export default (props) => (
     <Frame>
@@ -16,7 +15,6 @@ export default (props) => (
                 levelNumber={1}
                 gameTime={400}
             />
-            <LevelOverview />
         </FrameContent>
         {props.children}
     </Frame>

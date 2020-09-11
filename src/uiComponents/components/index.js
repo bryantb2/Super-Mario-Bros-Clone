@@ -1,3 +1,4 @@
 export * from './Scoreboard';
 export * from './GameFrame';
-export * from './LoadingScreen';
+export * from './Loading';
+export * from './MainMenu';
