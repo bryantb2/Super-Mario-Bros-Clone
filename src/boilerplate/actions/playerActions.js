@@ -33,3 +33,7 @@ export const resetPlayerUpgrade = () => dispatch => (
     dispatch({ type: actionTypes.RESET_PLAYER_UPGRADE })
 );
 
+export const resetAllPlayerData = () => dispatch => (
+    dispatch({ type: actionTypes.RESET_ALL_PLAYER_DATA })
+);
+

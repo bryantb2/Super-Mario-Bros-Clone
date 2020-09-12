@@ -5,6 +5,7 @@ import {
     gameGrid,
     Material
 } from './';
+import WOneLOne from '../assets/worldBackgrounds/blankBackground.png';
 
 // level matrix is a row/column system, with the first element of the sub-array being the top of the level
 export const gameLevels = [
@@ -13,6 +14,7 @@ export const gameLevels = [
         worldLevels: [
             {
                 levelId: levelIDs.LEVEL_1,
+                background: WOneLOne,
                 levelData: [
                     // FIRST MYSTERY AND BRICK BLOCKS
                     {
@@ -371,6 +373,7 @@ export const gameLevels = [
         worldLevels: [
             {
                 levelId: levelIDs.LEVEL_1,
+                background: WOneLOne,
                 levelData: [
                     // FIRST MYSTERY AND BRICK BLOCKS
                     {

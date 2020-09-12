@@ -1,11 +1,11 @@
 import actionTypes from '../actionTypes';
-import { playerData } from "../../gameConfig";
+import { playerData, baseUnitSize } from "../../gameConfig";
 
 const initialState = {
     size: playerData.SMALL_MARIO,
     position: {
-        x: 10,
-        y: 100
+        x: baseUnitSize.WIDTH,
+        y: baseUnitSize.HEIGHT * 2 // height x 2 because player must be above the floor
     },
     currentUpgrade: null
 };
@@ -34,6 +34,9 @@ export default (state = initialState, action) => {
         case actionTypes.RESET_PLAYER_UPGRADE:
             newState.currentUpgrade = initialState.currentUpgrade;
             return newState;
+        // reset all data
+        case actionTypes.RESET_ALL_PLAYER_DATA:
+            return initialState;
         default:
             return newState;
     }

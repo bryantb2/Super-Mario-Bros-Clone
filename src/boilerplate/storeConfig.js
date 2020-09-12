@@ -1,7 +1,7 @@
 import React from 'react';
 import reduxThunk from 'redux-thunk';
 import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import rootReducer from './reducers';
 
 // builder logger enhancer
@@ -15,10 +15,11 @@ const logger = store => next => action => {
 };
 
 // apply middleWares
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const middleWares = [reduxThunk];
 if (process.env.NODE_ENV === 'development') middleWares.push(logger);
 // create store
-const store = createStore(rootReducer, applyMiddleware(...middleWares));
+const store = createStore(rootReducer, composeEnhancers(applyMiddleware(...middleWares)));
 
 export default (props) => (
     <Provider store={store}>

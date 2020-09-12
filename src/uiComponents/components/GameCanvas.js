@@ -24,7 +24,7 @@ export const CanvasBackground = props => {
                 backgroundImage: `url(${props.image})`,
                 backgroundRepeat: 'no-repeat',
                 backgroundSize: 'cover',
-                backgroundPosition: `bottom right ${props.imageTranslation}`
+                backgroundPosition: `bottom left -${props.imageTranslation}px`
             }}
             height={winHeight}
             width={winWidth}

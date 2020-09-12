@@ -33,7 +33,9 @@ const playerTypes = {
     RESET_PLAYER_SIZE: 'RESET_PLAYER_SIZE',
     // powerup actions
     SET_PLAYER_UPGRADE: 'SET_PLAYER_UPGRADE',
-    RESET_PLAYER_UPGRADE: 'RESET_PLAYER_UPGRADE'
+    RESET_PLAYER_UPGRADE: 'RESET_PLAYER_UPGRADE',
+    // reset all player data
+    RESET_ALL_PLAYER_DATA: 'RESET_ALL_PLAYER_DATA'
 };
 
 // merged type object

@@ -4,6 +4,7 @@ import { gameLevels, generateMaterialGrid } from "../../gameConfig";
 const initialState = {
     worldId: null,
     levelId: null,
+    background: null,
     gameMap: null
 };
 
@@ -14,15 +15,15 @@ export default (state = initialState, action) => {
             const { worldId, levelId } = action.payload;
             // fetch level data
             const compressedLevelData = gameLevels
-                .find(world => world.worldId === worldId)
+                .find(world => world.worldId === worldId).worldLevels
                 .find(level => level.levelId === levelId);
             newState.worldId = worldId;
             newState.levelId = levelId;
             newState.gameMap = generateMaterialGrid(compressedLevelData); // decompress data
-        case actionTypes.RESET_LEVEL_WORLD:
-            newState.world = null;
-            newState.level = null;
+            newState.background = compressedLevelData.background;
             return newState;
+        case actionTypes.RESET_LEVEL_WORLD:
+            return initialState;
         default:
             return newState;
     }
