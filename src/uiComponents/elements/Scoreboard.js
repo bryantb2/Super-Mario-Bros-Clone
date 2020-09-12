@@ -20,5 +20,4 @@ export const ItemContainer = Styled.div`
     flex-direction: column;
     justify-content: space-between;
     align-items: bottom;
-    margin-right: 15rem;
 `;

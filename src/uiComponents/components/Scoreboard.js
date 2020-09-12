@@ -23,14 +23,14 @@ const AnimatedCoin = props => {
 }
 
 export const GameScore = props => (
-    <ItemContainer>
+    <ItemContainer style={{ marginRight: "15rem" }}>
         <div>Mario</div>
         <div>{formatScore(props.gameScore)}</div>
     </ItemContainer>
 );
 
 export const CoinCounter = props => (
-    <ItemContainer>
+    <ItemContainer style={{ marginRight: "15rem" }}>
         <div>
             <AnimatedCoin /> X {props.coinCount}
         </div>
@@ -38,7 +38,7 @@ export const CoinCounter = props => (
 );
 
 export const CurrentLevel = props => (
-    <ItemContainer>
+    <ItemContainer style={{ marginRight: "15rem" }}>
         <div>World</div>
         <div>{props.worldNumber} - {props.levelNumber}</div>
     </ItemContainer>
