@@ -5,7 +5,7 @@ import {
     GameText
 } from "../components";
 import { Layer } from 'react-konva';
-import Background from '../../assets/menu/menuBackground.png';
+import Background from '../../assets/menu/blank.png';
 
 export default props => {
 

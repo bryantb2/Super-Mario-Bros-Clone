@@ -1,17 +1,12 @@
 import actionTypes from "../actionTypes";
 
-export const setCurrentWorld = (currentWorld) => dispatch => (
+export const loadLevelData = (worldId, levelId) => dispatch => (
     dispatch({
-        type: actionTypes.SET_CURRENT_WORLD,
-        payload: currentWorld
-    })
-);
-
-
-export const setCurrentLevel = (currentLevel) => dispatch => (
-    dispatch({
-        type: actionTypes.SET_CURRENT_LEVEL,
-        payload: currentLevel
+        type: actionTypes.LOAD_LEVEL_DATA,
+        payload: {
+            worldId,
+            levelId
+        }
     })
 );
 

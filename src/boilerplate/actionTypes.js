@@ -19,13 +19,12 @@ const scoreboardTypes = {
 };
 
 const levelTypes = {
-    // world actions
-    SET_CURRENT_WORLD: 'SET_CURRENT_WORLD',
-    SET_CURRENT_LEVEL: 'SET_CURRENT_LEVEL',
+    // level and game data actions
+    LOAD_LEVEL_DATA: 'LOAD_LEVEL_DATA',
     RESET_LEVEL_WORLD: 'RESET_LEVEL_WORLD'
 };
 
-const gameplayTypes = {
+const playerTypes = {
     // position actions
     SET_PLAYER_POSITION: 'SET_PLAYER_POSITION',
     RESET_PLAYER_POSITION: 'RESET_PLAYER_POSITION',
@@ -38,4 +37,4 @@ const gameplayTypes = {
 };
 
 // merged type object
-export default {...scoreboardTypes, ...levelTypes, ...gameplayTypes};
+export default {...scoreboardTypes, ...levelTypes, ...playerTypes};
