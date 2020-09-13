@@ -39,8 +39,6 @@ export default props => {
         <CanvasBackground
             imageTranslation={10}
             image={loadedLevel.background}
-            width={window.innerWidth}
-            height={window.innerHeight}
         >
             <Layer>
                 <GameText

@@ -25,6 +25,9 @@ const levelTypes = {
 };
 
 const playerTypes = {
+    // topscore action
+    SET_TOP_SCORE: 'SET_TOP_SCORE',
+    FETCH_TOP_SCORE: 'FETCH_TOP_SCORE',
     // position actions
     SET_PLAYER_POSITION: 'SET_PLAYER_POSITION',
     RESET_PLAYER_POSITION: 'RESET_PLAYER_POSITION',

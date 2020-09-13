@@ -63,3 +63,21 @@ export const resetLevelTimer = () => dispatch => (
 export const resetScoreboard = () => dispatch => (
     dispatch({ type: actionTypes.RESET_ENTIRE_SCOREBOARD })
 );
+
+// top score
+export const setTopScore = score => dispatch => (
+    dispatch({
+        type: actionTypes.SET_TOP_SCORE,
+        payload: score
+    })
+);
+
+export const fetchTopScore = () => dispatch => {
+    // access local storage
+    const score = localStorage.getItem('TOP_SCORE') || 0;
+
+    dispatch({
+        type: actionTypes.FETCH_TOP_SCORE,
+        payload: score
+    })
+};

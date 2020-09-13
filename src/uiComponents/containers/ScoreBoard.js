@@ -15,6 +15,6 @@ export default (props) => (
             worldNumber={props.worldNumber}
             levelNumber={props.levelNumber}
         />
-        <GameTime gameTime={props.gameTime} />
+        <GameTime gameTime={props.levelTimer} />
     </Scoreboard>
 );

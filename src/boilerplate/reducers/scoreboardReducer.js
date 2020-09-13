@@ -1,6 +1,7 @@
 import actionTypes from '../actionTypes';
 
 const initialState = {
+    topScore: 0,
     points: 0,
     lives: 4,
     coins: 0,
@@ -44,9 +45,18 @@ export default (state = initialState, action) => {
         case actionTypes.RESET_LEVEL_TIMER:
             newState.levelTimer = 400;
             return newState;
+        // top score
+        case actionTypes.SET_TOP_SCORE:
+            newState.topScore = action.payload;
+            return newState;
+        case actionTypes.FETCH_TOP_SCORE:
+            newState.topScore = action.payload;
+            return newState;
         // entire score board
         case actionTypes.RESET_ENTIRE_SCOREBOARD:
-            return initialState;
+            const resetState = {...initialState};
+            resetState.topScore = newState.topScore; // do not reset the top score
+            return resetState;
         default:
             return newState;
     }

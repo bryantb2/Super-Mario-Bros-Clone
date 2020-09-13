@@ -74,17 +74,17 @@ export const passiveDisplayItemIDs = {
 export const worldAndLevelIDs = {
     // worlds
     TEST_WORLD: 'TEST_WORLD',
-    WORLD_1: 'WORLD_1',
-    WORLD_2: 'WORLD_2',
-    WORLD_3: 'WORLD_3',
-    WORLD_4: 'WORLD_4',
-    WORLD_5: 'WORLD_5',
-    WORLD_6: 'WORLD_6',
-    WORLD_7: 'WORLD_7',
-    WORLD_8: 'WORLD_8',
+    WORLD_1: 1,
+    WORLD_2: 2,
+    WORLD_3: 3,
+    WORLD_4: 4,
+    WORLD_5: 5,
+    WORLD_6: 6,
+    WORLD_7: 7,
+    WORLD_8: 8,
     // levels (4 per world)
-    LEVEL_1: 'LEVEL_1',
-    LEVEL_2: 'LEVEL_2',
-    LEVEL_3: 'LEVEL_3',
-    LEVEL_4: 'LEVEL_4'
+    LEVEL_1: 1,
+    LEVEL_2: 2,
+    LEVEL_3: 3,
+    LEVEL_4: 4
 };
