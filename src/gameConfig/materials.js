@@ -1,5 +1,19 @@
 import { tileIDs, animationTypes } from './gameGlobals';
 import { guidGenerator } from './basicHelpers';
+import BRICK_1 from '../assets/materials/brick/BRICK_1.png';
+import BRICK_2 from '../assets/materials/brick/BRICK_2.png';
+import BRICK_3 from '../assets/materials/brick/BRICK_3.png';
+import BRICK_4 from '../assets/materials/brick/BRICK_4.png';
+import WOOD_1 from '../assets/materials/mysteryBox/WOOD_1.png';
+import WOOD_2 from '../assets/materials/mysteryBox/WOOD_2.png';
+import WOOD_3 from '../assets/materials/mysteryBox/WOOD_3.png';
+import WOOD_4 from '../assets/materials/mysteryBox/WOOD_4.png';
+import WOOD_5 from '../assets/materials/mysteryBox/WOOD_5.png';
+import FLOOR from '../assets/materials/static/FLOOR.png';
+import PIPE_1 from '../assets/materials/static/PIPE_1.png';
+import PIPE_2 from '../assets/materials/static/PIPE_2.png';
+import PIPE_3 from '../assets/materials/static/PIPE_3.png';
+import PIPE_4 from '../assets/materials/static/PIPE_4.png';
 
 export class Material {
     constructor(
@@ -18,11 +32,13 @@ export class Material {
         this.maxHitCount = maxHitCount;
         this.hitReward = hitRewardId; // item produced upon interaction with the material
         this.destroyReward = destroyRewardId; // item produced upon final destruction of the material
+        this.animationData = materialRenderInstructions.find(animation => animation.materialId === initialMaterialId);
     }
 
     // properties
     get instanceId() { return this.objectId; }
     get materialType() { return this.initialMaterialId; }
+    get materialAnimation() { return this.animationData; }
     get isLethal() { return this.lethal; }
     get isInteractable() { return this.interactable; }
     get isDestroyed() { return this.hitCount >= this.maxHitCount }
@@ -73,12 +89,12 @@ export class Material {
         ]
     }
  */
-export const materialRenderInstructions = () => {
+export const materialRenderInstructions = (
     // create appropriate material animation frames
-    return [
+    [
         {
             materialId: tileIDs.BRICK,
-            baseMaterial: '../assets/brick/BRICK_1.png',
+            baseMaterial: BRICK_1,
             animations: [
                 {
                     type: animationTypes.BASE_ANIMATION,
@@ -89,24 +105,24 @@ export const materialRenderInstructions = () => {
                     type: animationTypes.HIT_ANIMATION,
                     cycleTime: 1000,
                     imageFrames: [
-                        '../assets/brick/BRICK_1.png'
+                        BRICK_1
                     ]
                 },
                 {
                     type: animationTypes.DESTROY_ANIMATION,
                     cycleTime: 1000,
                     imageFrames: [
-                        '../assets/brick/BRICK_1.png',
-                        '../assets/brick/BRICK_2.png',
-                        '../assets/brick/BRICK_3.png',
-                        '../assets/brick/BRICK_4.png'
+                        BRICK_1,
+                        BRICK_2,
+                        BRICK_3,
+                        BRICK_4
                     ]
                 }
             ]
         },
         {
             materialId: tileIDs.MYSTERY_BOX,
-            baseMaterial: '../assets/mysteryBox/WOOD_1.png',
+            baseMaterial: WOOD_1,
             animations: [
                 {
                     type: animationTypes.BASE_ANIMATION,
@@ -117,25 +133,25 @@ export const materialRenderInstructions = () => {
                     type: animationTypes.HIT_ANIMATION,
                     cycleTime: 1000,
                     imageFrames: [
-                        '../assets/mysteryBox/WOOD_1.png'
+                        WOOD_1
                     ]
                 },
                 {
                     type: animationTypes.DESTROY_ANIMATION,
                     cycleTime: 1000,
                     imageFrames: [
-                        '../assets/mysteryBox/WOOD_1.png',
-                        '../assets/mysteryBox/WOOD_2.png',
-                        '../assets/mysteryBox/WOOD_3.png',
-                        '../assets/mysteryBox/WOOD_4.png',
-                        '../assets/mysteryBox/WOOD_5.png'
+                        WOOD_1,
+                        WOOD_2,
+                        WOOD_3,
+                        WOOD_4,
+                        WOOD_5
                     ]
                 }
             ]
         },
         {
             materialId: tileIDs.FLOOR_BRICK,
-            baseMaterial: '../assets/static/FLOOR.png',
+            baseMaterial: FLOOR,
             animations: [
                 {
                     type: animationTypes.BASE_ANIMATION,
@@ -156,7 +172,7 @@ export const materialRenderInstructions = () => {
         },
         {
             materialId: tileIDs.PIPE_TOP_LEFT,
-            baseMaterial: '../assets/static/PIPE_1.png',
+            baseMaterial: PIPE_1,
             animations: [
                 {
                     type: animationTypes.BASE_ANIMATION,
@@ -177,7 +193,7 @@ export const materialRenderInstructions = () => {
         },
         {
             materialId: tileIDs.PIPE_TOP_RIGHT,
-            baseMaterial: '../assets/static/PIPE_2.png',
+            baseMaterial: PIPE_2,
             animations: [
                 {
                     type: animationTypes.BASE_ANIMATION,
@@ -198,7 +214,7 @@ export const materialRenderInstructions = () => {
         },
         {
             materialId: tileIDs.PIPE_SHAFT_LEFT,
-            baseMaterial: '../assets/static/PIPE_3.png',
+            baseMaterial: PIPE_3,
             animations: [
                 {
                     type: animationTypes.BASE_ANIMATION,
@@ -219,7 +235,7 @@ export const materialRenderInstructions = () => {
         },
         {
             materialId: tileIDs.PIPE_SHAFT_RIGHT,
-            baseMaterial: '../assets/static/PIPE_4.png',
+            baseMaterial: PIPE_4,
             animations: [
                 {
                     type: animationTypes.BASE_ANIMATION,
@@ -239,4 +255,4 @@ export const materialRenderInstructions = () => {
             ]
         }
     ]
-};
+);

@@ -6,6 +6,8 @@ import {
 } from "../components";
 import { Layer } from 'react-konva';
 import { useSelector, useDispatch} from "react-redux";
+import { findPixelPositionByTile, baseUnitSize } from "../../gameConfig";
+import testImage from '../../assets/menu/banner.png';
 
 export default props => {
     const dispatch = useDispatch();
@@ -26,15 +28,41 @@ export default props => {
         }
     }, []);
 
+    const grid = loadedLevel.gameMap === null ? null :
+        loadedLevel.gameMap.map((column, columnIndex) =>
+            column.map((tile, rowIndex) => {
+                    if (tile !== undefined && tile !== null) {
+                        const pixelPosition = findPixelPositionByTile(columnIndex, rowIndex);
+                        return (
+                            <GameImage
+                                key={tile.instanceId}
+                                x={pixelPosition.x - baseUnitSize.WIDTH}
+                                y={pixelPosition.y}
+                                width={baseUnitSize.WIDTH}
+                                height={baseUnitSize.HEIGHT}
+                                src={tile.materialAnimation.baseMaterial}
+                            />
+                        )
+                    }
+                }
+            ).filter(tile => tile !== undefined & tile !== null)
+        ).flatMap(column => [...column]);
+
+
+    console.log('loaded level array:');
+    console.log(loadedLevel);
+    console.log('reactified array: ');
+    console.log(grid);
+
     return (
         <CanvasBackground
-            imageTranslation={10}
+            imageTranslation={0}
             image={loadedLevel.background}
         >
             <Layer>
-                <GameText
-                    text={'200 points'}
-                />
+                {
+                    grid
+                }
             </Layer>
         </CanvasBackground>
     );

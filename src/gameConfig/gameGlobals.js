@@ -7,8 +7,8 @@ export const gameGrid = {
 };
 
 export const baseUnitSize = {
-    WIDTH:  '25',
-    HEIGHT: '30',
+    WIDTH:  '60', //Math.floor(window.innerWidth / gameGrid.RENDERABLE_HEIGHT), //'60',
+    HEIGHT: '60', //Math.floor(window.innerHeight / gameGrid.GRID_WIDTH), //'60',
     UNITS:  'px'
 };
 

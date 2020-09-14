@@ -34,20 +34,38 @@ export const CanvasBackground = props => {
     );
 };
 
-export const GameImage = props => {
-    const { x, y, src, width, height } = props;
+export function GameImage(props)  {
     // build out dom image
-    const [domImage] = useImage(src);
-    domImage.width = width;
-    domImage.height = height;
+    const { x, y, src, width, height } = props;
+    const [image, status] = useImage(src);
+
+    // executes when status changes
+    useEffect(() => {
+        // check status every 10ms
+        const timer = setInterval(() => {
+            // check if loaded
+            if (status === 'loaded') {
+                // set image dimensions
+                image.width = '100%';
+                image.height = '100%';
+                // clear timer
+                clearInterval(timer);
+            }
+        }, 10);
+    }, [status]);
+
     // generate canvas element
-    return (
-        <Image
-            x={x}
-            y={y}
-            image={useImage(props.src)}
-        />
-    );
+    if (status === "loaded")
+        return (
+            <Image
+                x={x}
+                y={y}
+                width={width}
+                height={height}
+                image={image}
+            />
+        );
+    return null;
 };
 
 export const GameText = props => (

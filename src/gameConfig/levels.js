@@ -434,9 +434,9 @@ export const generateMaterialGrid = (compressedTileArr) => (
             }
             return material;
     }))
+    // map each individual tile to full material object
     .map(columnArr =>
-        // map each individual tile to full material object
-        columnArr.map(tile => createMaterialById(tile)))
+        columnArr.map(tile => tile === undefined ? tile : createMaterialById(tile)))
 );
 
 const createMaterialById = (materialId) => {
