@@ -21,7 +21,8 @@ const scoreboardTypes = {
 const levelTypes = {
     // level and game data actions
     LOAD_LEVEL_DATA: 'LOAD_LEVEL_DATA',
-    RESET_LEVEL_WORLD: 'RESET_LEVEL_WORLD'
+    RESET_LEVEL_WORLD: 'RESET_LEVEL_WORLD',
+    SET_LEVEL_LOAD: 'SET_LEVEL_LOAD'
 };
 
 const playerTypes = {
