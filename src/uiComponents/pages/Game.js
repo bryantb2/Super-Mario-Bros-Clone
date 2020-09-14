@@ -9,27 +9,27 @@ export default props => {
     // get redux data
     const dispatch = useDispatch();
     const loadedLevel = useSelector(state => state.loadedLevel);
-    const displayLoad = loadedLevel.loadingLevel;
+    const { loadingLevel } = loadedLevel;
 
     // executes when loading is true
     useEffect(() => {
-        if (displayLoad) {
+        if (loadingLevel) {
             // wait for 5 seconds and then set loading to false
             setTimeout(() => {
                 dispatch(setLevelLoad(false));
             }, 6000);
         }
-    }, [loadedLevel.loadingLevel]);
+    }, [loadingLevel]);
 
     return (
         <>
             {
-                displayLoad === true ?
+                loadingLevel === true ?
                 <LoadingPageContainer>
                     <LoadingContent />
                 </LoadingPageContainer> : null
             }
-            <CanvasPageContainer style={{display: `${displayLoad === true ? 'none' : 'block'}`}}>
+            <CanvasPageContainer style={{display: `${loadingLevel === true ? 'none' : 'block'}`}}>
                 <GameCanvas />
             </CanvasPageContainer>
         </>
