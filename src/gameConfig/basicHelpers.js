@@ -1,3 +1,5 @@
+import { baseUnitSize, gameGrid } from "./gameGlobals";
+
 export const guidGenerator = () => {
     return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
         (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
@@ -20,6 +22,12 @@ export const formatScore = score => {
 };
 
 // retrieve array position of tile by pixel location
-export const findTilePosition = (xPos, yPos) => {
-    // todo
-}
+export const findTilePositionByPixel = (xPos, yPos) => ({
+    x: Math.floor(Math.floor(xPos) / baseUnitSize.WIDTH) - 1,
+    y: Math.floor(Math.floor(yPos) / baseUnitSize.HEIGHT) - 1
+});
+
+export const findPixelPositionByTile = (columnIndex, rowIndex) => ({
+    x: (columnIndex + 1 ) * baseUnitSize.WIDTH, // right edge
+    y: ((gameGrid.RENDERABLE_HEIGHT - (rowIndex + 1)) * baseUnitSize.HEIGHT) + baseUnitSize.HEIGHT // top edge (element 0 is actually top of screen, so index must be reversed for height)
+});

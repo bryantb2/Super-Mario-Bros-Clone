@@ -479,4 +479,4 @@ const findLevelDataByIndexes = (tileArr, columnIndex, rowIndex) =>
 // builds the initial grid structure used to store game data
 const buildGridStructure = () => (
     Array(gameGrid.GRID_WIDTH).fill(levelIDs.NOTHING)
-        .map(_ => Array(gameGrid.RENDERABLE_HEIGHT + 2).fill(levelIDs.NOTHING)));
+        .map(_ => Array(gameGrid.RENDERABLE_HEIGHT).fill(levelIDs.NOTHING)));
