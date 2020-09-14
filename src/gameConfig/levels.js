@@ -420,25 +420,24 @@ export const gameLevels = [
 // meant to generate a full (uncompressed) tile ID array
 export const generateMaterialGrid = (compressedTileArr) => (
     // go through each column
-    buildGridStructure().map((columnArr, columnIndex) => {
-        // make copy of column and then loop through contents
-        const newColumn = [...columnArr];
-        columnArr.forEach((tile, rowIndex) => {
-            if (rowIndex >= columnArr.length - 2 && rowIndex < columnArr.length) {
+    buildGridStructure().map((columnArr, columnIndex) =>
+        // map the contents of the column
+        [...columnArr].map((tile, rowIndex) => {
+            let material = tile;
+            if (rowIndex >= columnArr.length - 2) {
                 // fill with floor blocks
-                newColumn[rowIndex] = tileIDs.FLOOR_BRICK;
+                material = tileIDs.FLOOR_BRICK;
             } else {
                 // incorporate interactive level data from block array
                 const customBlock = findLevelDataByIndexes(compressedTileArr, columnIndex, rowIndex);
-                if (customBlock !== undefined)
-                    newColumn[columnIndex][rowIndex] = customBlock.materialId;
+                material = customBlock == undefined ? material : customBlock.materialId;
             }
-        });
-        return newColumn;
-    })
-    // map each individual tile to full material object
+            return material;
+    }))
     .map(columnArr =>
-        columnArr.map(tile => createMaterialById(tile))));
+        // map each individual tile to full material object
+        columnArr.map(tile => createMaterialById(tile)))
+);
 
 const createMaterialById = (materialId) => {
     // randomize interactivity
@@ -473,12 +472,11 @@ const createMaterialById = (materialId) => {
 const getNumberBetween = (min, max) => Math.random() * (max - min) + min;
 
 // takes in a row and column index, searches the tile array for block with specified indexes
-const findLevelDataByIndexes = (tileArr, columnIndex, rowIndex) => (
+const findLevelDataByIndexes = (tileArr, columnIndex, rowIndex) =>
     // tile coordinates are 1 GREATER than raw indexes
-    tileArr.find(tile => (tile.xBlock === columnIndex + 1) && (tile.yBlock === rowIndex + 1))
-);
+    tileArr.find(tile => tile.xBlock === (columnIndex + 1) && tile.yBlock === (rowIndex + 1));
 
 // builds the initial grid structure used to store game data
 const buildGridStructure = () => (
-    Array(gameGrid.GRID_WIDTH).map(_ =>
-        Array(gameGrid.RENDERABLE_HEIGHT + 2).fill(levelIDs.NOTHING)));
+    Array(gameGrid.GRID_WIDTH).fill(levelIDs.NOTHING)
+        .map(_ => Array(gameGrid.RENDERABLE_HEIGHT + 2).fill(levelIDs.NOTHING)));

@@ -21,7 +21,7 @@ export default (state = initialState, action) => {
                 .find(level => level.levelId === levelId);
             newState.worldId = worldId;
             newState.levelId = levelId;
-            newState.gameMap = generateMaterialGrid(compressedLevelData); // decompress data
+            newState.gameMap = generateMaterialGrid(compressedLevelData.levelData); // decompress data
             newState.background = compressedLevelData.background;
             return newState;
         // reset level

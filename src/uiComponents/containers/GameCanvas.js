@@ -6,8 +6,6 @@ import {
 } from "../components";
 import { Layer } from 'react-konva';
 import { useSelector, useDispatch} from "react-redux";
-import { loadLevelData, resetScoreboard, resetAllPlayerData } from "../../boilerplate/actions";
-import { worldAndLevelIDs } from "../../gameConfig";
 
 export default props => {
     const dispatch = useDispatch();
@@ -16,13 +14,6 @@ export default props => {
 
     // executed on mount
     useEffect(() => {
-        // set level data (always starts ata 1-1
-        // reset scoreboard
-        // reset all player data
-        dispatch(loadLevelData(worldAndLevelIDs.WORLD_1, worldAndLevelIDs.LEVEL_1));
-        dispatch(resetScoreboard());
-        dispatch(resetAllPlayerData());
-
         // setup game loop
         const gameLoop = setInterval(() => {
             // todo

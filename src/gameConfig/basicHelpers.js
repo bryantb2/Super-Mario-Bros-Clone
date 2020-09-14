@@ -18,3 +18,8 @@ export const formatScore = score => {
     }
     return formattedScore;
 };
+
+// retrieve array position of tile by pixel location
+export const findTilePosition = (xPos, yPos) => {
+    // todo
+}
