@@ -4,8 +4,8 @@ import { playerData, baseUnitSize } from "../../gameConfig";
 const initialState = {
     size: playerData.SMALL_MARIO,
     position: {
-        x: baseUnitSize.WIDTH,
-        y: baseUnitSize.HEIGHT * 2 // height x 2 because player must be above the floor
+        x: baseUnitSize().WIDTH,
+        y: baseUnitSize().HEIGHT * 2 // height x 2 because player must be above the floor
     },
     currentUpgrade: null
 };

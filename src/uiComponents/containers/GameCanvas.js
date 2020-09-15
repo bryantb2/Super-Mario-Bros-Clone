@@ -28,18 +28,19 @@ export default props => {
         }
     }, []);
 
-    const grid = loadedLevel.gameMap === null ? null :
+    /*const grid = loadedLevel.gameMap === null ? null :
         loadedLevel.gameMap.map((column, columnIndex) =>
             column.map((tile, rowIndex) => {
                     if (tile !== undefined && tile !== null) {
                         const pixelPosition = findPixelPositionByTile(columnIndex, rowIndex);
+                        const { WIDTH, HEIGHT } = baseUnitSize();
                         return (
                             <GameImage
                                 key={tile.instanceId}
-                                x={pixelPosition.x - baseUnitSize.WIDTH}
+                                x={pixelPosition.x - WIDTH}
                                 y={pixelPosition.y}
-                                width={baseUnitSize.WIDTH}
-                                height={baseUnitSize.HEIGHT}
+                                width={WIDTH}
+                                height={HEIGHT}
                                 src={tile.materialAnimation.baseMaterial}
                             />
                         )
@@ -52,7 +53,7 @@ export default props => {
     console.log('loaded level array:');
     console.log(loadedLevel);
     console.log('reactified array: ');
-    console.log(grid);
+    console.log(grid);*/
 
     return (
         <CanvasBackground
@@ -61,7 +62,26 @@ export default props => {
         >
             <Layer>
                 {
-                    grid
+                    loadedLevel.gameMap === null ? null :
+                        loadedLevel.gameMap.map((column, columnIndex) =>
+                            column.map((tile, rowIndex) => {
+                                    if (tile !== undefined && tile !== null) {
+                                        const pixelPosition = findPixelPositionByTile(columnIndex, rowIndex);
+                                        const { WIDTH, HEIGHT } = baseUnitSize();
+                                        return (
+                                            <GameImage
+                                                key={tile.instanceId}
+                                                x={pixelPosition.x - WIDTH /*translate left since width is measured from right edge*/}
+                                                y={pixelPosition.y - HEIGHT /*translate up since height is measured from top edge*/}
+                                                width={WIDTH}
+                                                height={HEIGHT}
+                                                src={tile.materialAnimation.baseMaterial}
+                                            />
+                                        )
+                                    }
+                                }
+                            ).filter(tile => tile !== undefined & tile !== null)
+                        ).flatMap(column => [...column])
                 }
             </Layer>
         </CanvasBackground>

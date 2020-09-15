@@ -23,13 +23,14 @@ export const formatScore = score => {
 
 // retrieve array position of tile by pixel location
 export const findTilePositionByPixel = (xPos, yPos) => ({
-    x: Math.floor(Math.floor(xPos) / baseUnitSize.WIDTH) - 1,
-    y: Math.floor(Math.floor(yPos) / baseUnitSize.HEIGHT) - 1
+    x: Math.floor(Math.floor(xPos) / baseUnitSize().WIDTH) - 1,
+    y: Math.floor(Math.floor(yPos) / baseUnitSize().HEIGHT) - 1
 });
 
 // retrieve x / y pixel positions via a column/row index
 export const findPixelPositionByTile = (columnIndex, rowIndex) => ({
-    x: (columnIndex + 1 ) * baseUnitSize.WIDTH, // right edge
-    y: (rowIndex + 1) * baseUnitSize.HEIGHT //((gameGrid.RENDERABLE_HEIGHT - (rowIndex + 1)) * baseUnitSize.HEIGHT) + baseUnitSize.HEIGHT // top edge (element 0 is actually top of screen, so index must be reversed for height)
+    x: (columnIndex + 1 ) * baseUnitSize().WIDTH, // right edge
+    y: (rowIndex + 1) * baseUnitSize().HEIGHT  // top edge (element 0 is actually top of screen, so index must be reversed for height)
+    //y: ((gameGrid.RENDERABLE_HEIGHT - (rowIndex + 1)) * baseUnitSize.HEIGHT) + baseUnitSize.HEIGHT
 });
 

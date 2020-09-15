@@ -6,11 +6,11 @@ export const gameGrid = {
     GRID_WIDTH:         250
 };
 
-export const baseUnitSize = {
-    WIDTH:  '60', //Math.floor(window.innerWidth / gameGrid.RENDERABLE_HEIGHT), //'60',
-    HEIGHT: '60', //Math.floor(window.innerHeight / gameGrid.GRID_WIDTH), //'60',
+export const baseUnitSize = () => ({
+    WIDTH: '70', //Math.floor(window.innerWidth / gameGrid.RENDERABLE_WIDTH),
+    HEIGHT: Math.floor(window.innerHeight / gameGrid.RENDERABLE_HEIGHT), // '67',
     UNITS:  'px'
-};
+});
 
 export const animationTypes = {
     HIT_ANIMATION:      'HIT_ANIMATION', // swells occur when a player interacts with a material
