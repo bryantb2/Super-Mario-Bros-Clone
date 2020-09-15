@@ -127,7 +127,11 @@ export const materialRenderInstructions = (
                 {
                     type: animationTypes.BASE_ANIMATION,
                     cycleTime: 1000,
-                    imageFrames: []
+                    imageFrames: [
+                        WOOD_1,
+                        WOOD_2,
+                        WOOD_3
+                    ]
                 },
                 {
                     type: animationTypes.HIT_ANIMATION,

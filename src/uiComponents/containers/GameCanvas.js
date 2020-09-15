@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import {
     CanvasBackground,
-    GameImage,
+    AnimatedMaterial,
     GameText
 } from "../components";
 import { Layer } from 'react-konva';
@@ -15,7 +15,7 @@ export default props => {
     const loadedLevel = useSelector(state => state.loadedLevel);
 
     // executed on mount
-    useEffect(() => {
+    /*useEffect(() => {
         // setup game loop
         const gameLoop = setInterval(() => {
             // todo
@@ -26,34 +26,7 @@ export default props => {
         return () => {
             clearInterval(gameLoop);
         }
-    }, []);
-
-    /*const grid = loadedLevel.gameMap === null ? null :
-        loadedLevel.gameMap.map((column, columnIndex) =>
-            column.map((tile, rowIndex) => {
-                    if (tile !== undefined && tile !== null) {
-                        const pixelPosition = findPixelPositionByTile(columnIndex, rowIndex);
-                        const { WIDTH, HEIGHT } = baseUnitSize();
-                        return (
-                            <GameImage
-                                key={tile.instanceId}
-                                x={pixelPosition.x - WIDTH}
-                                y={pixelPosition.y}
-                                width={WIDTH}
-                                height={HEIGHT}
-                                src={tile.materialAnimation.baseMaterial}
-                            />
-                        )
-                    }
-                }
-            ).filter(tile => tile !== undefined & tile !== null)
-        ).flatMap(column => [...column]);
-
-
-    console.log('loaded level array:');
-    console.log(loadedLevel);
-    console.log('reactified array: ');
-    console.log(grid);*/
+    }, []);*/
 
     return (
         <CanvasBackground
@@ -69,13 +42,13 @@ export default props => {
                                         const pixelPosition = findPixelPositionByTile(columnIndex, rowIndex);
                                         const { WIDTH, HEIGHT } = baseUnitSize();
                                         return (
-                                            <GameImage
+                                            <AnimatedMaterial
                                                 key={tile.instanceId}
                                                 x={pixelPosition.x - WIDTH /*translate left since width is measured from right edge*/}
                                                 y={pixelPosition.y - HEIGHT /*translate up since height is measured from top edge*/}
                                                 width={WIDTH}
                                                 height={HEIGHT}
-                                                src={tile.materialAnimation.baseMaterial}
+                                                animationData={tile.materialAnimation}
                                             />
                                         )
                                     }
