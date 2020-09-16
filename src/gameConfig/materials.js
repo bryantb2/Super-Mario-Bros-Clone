@@ -1,19 +1,32 @@
-import { tileIDs, animationTypes } from './gameGlobals';
+import {tileIDs, animationTypes, playerData, playerMovement, playerSize} from './gameGlobals';
 import { guidGenerator } from './basicHelpers';
+// BRICK
 import BRICK_1 from '../assets/materials/brick/BRICK_1.png';
 import BRICK_2 from '../assets/materials/brick/BRICK_2.png';
 import BRICK_3 from '../assets/materials/brick/BRICK_3.png';
 import BRICK_4 from '../assets/materials/brick/BRICK_4.png';
+// MYSTERY BOX
 import WOOD_1 from '../assets/materials/mysteryBox/WOOD_1.png';
 import WOOD_2 from '../assets/materials/mysteryBox/WOOD_2.png';
 import WOOD_3 from '../assets/materials/mysteryBox/WOOD_3.png';
 import WOOD_4 from '../assets/materials/mysteryBox/WOOD_4.png';
 import WOOD_5 from '../assets/materials/mysteryBox/WOOD_5.png';
 import FLOOR from '../assets/materials/static/FLOOR.png';
+// PIPE
 import PIPE_1 from '../assets/materials/static/PIPE_1.png';
 import PIPE_2 from '../assets/materials/static/PIPE_2.png';
 import PIPE_3 from '../assets/materials/static/PIPE_3.png';
 import PIPE_4 from '../assets/materials/static/PIPE_4.png';
+// SMALL MARIO STANDARD
+import S_MARIO_STANDING from '../assets/player/smallMario/standard/STANDING.png';
+import S_MARIO_DYING from '../assets/player/smallMario/standard/DYING.png';
+import S_MARIO_JUMP from '../assets/player/smallMario/standard/JUMP.png';
+import S_MARIO_INITIAL_SPRINT from '../assets/player/smallMario/standard/INITIAL_SPRINT.png';
+import S_MARIO_INITIAL_WALK from '../assets/player/smallMario/standard/INITIAL_WALK.png';
+import S_MARIO_MID_WALK from '../assets/player/smallMario/standard/MID_WALK.png';
+import S_MARIO_FINAL_WALK from '../assets/player/smallMario/standard/FINAL_WALK.png';
+import S_MARIO_POLE_INITIAL from '../assets/player/smallMario/standard/POLE_INITIAL.png';
+import S_MARIO_POLE_FINAL from '../assets/player/smallMario/standard/POLE_FINAL.png'
 
 export class Material {
     constructor(
@@ -255,6 +268,43 @@ export const materialRenderInstructions = (
                     type: animationTypes.DESTROY_ANIMATION,
                     cycleTime: 1000,
                     imageFrames: []
+                }
+            ]
+        }
+    ]
+);
+
+export const playerAnimation = (
+    [
+        {
+            playerId: playerSize[0].id,
+            restingSprite: S_MARIO_STANDING,
+            animations: [
+                {
+                    type: playerMovement.WALK,
+                    cycleTime: 1000,
+                    imageFrames: [
+                        S_MARIO_INITIAL_WALK,
+                        S_MARIO_MID_WALK,
+                        S_MARIO_FINAL_WALK
+                    ]
+                },
+                {
+                    type: playerMovement.JUMP,
+                    cycleTime: 1000,
+                    imageFrames: [
+                        S_MARIO_JUMP
+                    ]
+                },
+                {
+                    type: playerMovement.SPRINT,
+                    cycleTime: 1000,
+                    imageFrames: [
+                        S_MARIO_INITIAL_SPRINT,
+                        S_MARIO_INITIAL_WALK,
+                        S_MARIO_MID_WALK,
+                        S_MARIO_FINAL_WALK
+                    ]
                 }
             ]
         }

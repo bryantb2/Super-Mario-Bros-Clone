@@ -1,11 +1,17 @@
 import actionTypes from '../actionTypes';
-import { playerData, baseUnitSize } from "../../gameConfig";
+import {
+    playerSize,
+    baseUnitSize,
+    gameGrid,
+    playerMovement
+} from "../../gameConfig";
 
 const initialState = {
-    size: playerData.SMALL_MARIO,
+    size: playerSize[0].id,
+    movementType: playerMovement.STAND,
     position: {
         x: baseUnitSize().WIDTH,
-        y: baseUnitSize().HEIGHT * 2 // height x 2 because player must be above the floor
+        y: baseUnitSize().HEIGHT * (gameGrid.RENDERABLE_HEIGHT - 2)
     },
     currentUpgrade: null
 };

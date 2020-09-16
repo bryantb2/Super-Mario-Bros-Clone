@@ -20,10 +20,6 @@ export const animationTypes = {
 
 export const playerData = {
     // height / width values are values multiplied relative to base units object
-    SMALL_PLAYER_HEIGHT:    1,
-    SMALL_PLAYER_WIDTH:     0.75,
-    LARGE_PLAYER_HEIGHT:    2,
-    LARGE_PLAYER_WIDTH:     1,
     JUMP_HEIGHT_STANDING:   4,
     JUMP_HEIGHT_WALKING:    4.25,
     JUMP_HEIGHT_RUNNING:    5,
@@ -32,9 +28,37 @@ export const playerData = {
     JUMP_DISTANCE_WALKING:  4.75,
     JUMP_DISTANCE_RUNNING:  8.5,
     JUMP_DISTANCE_SPRINT:   11.5,
-    SMALL_MARIO: 'SMALL_MARIO',
-    SUPER_MARIO: 'SUPER_MARIO'
 };
+
+export const playerSize = [
+    {
+        id: 'SMALL_MARIO',
+        height: 2,
+        width: 1
+    },
+    {
+        id: 'SUPER_MARIO',
+        height: 1,
+        width: 0.75
+    }
+];
+
+export const playerMovement = {
+    // actions
+    STAND:   'STANDING',
+    WALK:    'WALKING',
+    JUMP:    'JUMP',
+    CROUCH:  'CROUCHING',
+    SWIM:    'SWIMMING',
+    SPRINT:  'SPRINT',
+    // directions
+    UP:      'W',
+    DOWN:    'S',
+    LEFT:    'A',
+    RIGHT:   'D',
+    RUN:     'SHIFT'
+};
+
 
 // game tile objects that are rendered at start
 export const tileIDs = {

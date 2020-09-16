@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Image, Text, Stage } from 'react-konva';
-import useImage from "use-image";
+import { Layer, Stage} from 'react-konva';
 import { animationTypes } from "../../gameConfig";
+import { GameImage } from "../elements";
 
 export const CanvasBackground = props => {
     const [winHeight, setHeight] = useState(window.innerHeight);
@@ -34,64 +34,6 @@ export const CanvasBackground = props => {
         </Stage>
     );
 };
-
-/*export const GameImage = props => {
-    // destructure props
-    const { x, y, src: { baseMaterial, animations }, width, height } = props;
-    // build initial image and image state
-    const [rawImage, setImage] = useState({
-        material: baseMaterial, materialIndex: 0
-    });
-    //const [domImage, status] = useImage(rawImage === undefined ? baseMaterial : rawImage.material);
-
-
-    useEffect(() => {
-        let animationTimer;
-        // wait to execute until current image has loaded
-        //if (status === 'loaded') {
-            // get base animation data by animation type
-            const baseAnimation = animations.find(animData => animData.type === animationTypes.BASE_ANIMATION);
-            if (baseAnimation !== undefined && baseAnimation.imageFrames.length >= 2) {
-                // create timer for base animation
-                animationTimer = setInterval(() => {
-                    // set new material source and index
-                    const newMaterial = {...rawImage};
-                    if (newMaterial.materialIndex >= baseAnimation.imageFrames.length - 1) {
-                        // set to zero because it reached the end of the animation frame
-                        newMaterial.materialIndex = 0;
-                    } else {
-                        // go to new animation frame
-                        newMaterial.materialIndex += 1;
-                    }
-                    // get raw material based on index
-                    newMaterial.materialIndex = baseAnimation[newMaterial.materialIndex];
-                    // set state of image
-                    setImage(newMaterial);
-                }, baseAnimation.cycleTime);
-            } else {
-                // set base material if no base animation data exists
-                setImage(baseAnimation.baseMaterial);
-            }
-        //}
-        return () => clearInterval(animationTimer);
-    //}, [status]);
-    }, []);
-
-    //if (status !== 'loaded')
-       // console.log('dom image value has changed');
-
-    // generate canvas element
-    // image={status === 'loaded' ? domImage : null}
-    return (
-        <Image
-            x={x}
-            y={y}
-            width={width}
-            height={height}
-            image={useImage(rawImage === undefined ? null : rawImage.material)[0]}
-        />
-    );
-};*/
 
 export const AnimatedMaterial = props => {
     // destructure props
@@ -130,30 +72,19 @@ export const AnimatedMaterial = props => {
     );
 };
 
-const GameImage = props => {
-    // build out dom image
-    const { x, y, src, width, height } = props;
+export const AnimatedPlayer = props => {
+    // destructure props
+    const { x,  y,  animationData: { restingSprite, animations }, width, height } = props;
 
-    // build image
-    const img = document.createElement('img');
-    img.src = src;
 
-    // generate canvas element
+
     return (
-        <Image
-            x={x}
-            y={y}
-            width={width}
-            height={height}
-            image={img}
+        <GameImage
+            x={position.x}
+            y={position.y}
+            width={sizeObject.width}
+            height={sizeObject.height}
+            src={}
         />
     );
-};
-
-export const GameText = props => (
-    <Text
-        x={props.x}
-        y={props.y}
-        text={props.text}
-    />
-);
+}

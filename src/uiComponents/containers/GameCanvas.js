@@ -2,31 +2,22 @@ import React, { useEffect } from 'react';
 import {
     CanvasBackground,
     AnimatedMaterial,
-    GameText
+    AnimatedPlayer
 } from "../components";
 import { Layer } from 'react-konva';
-import { useSelector, useDispatch} from "react-redux";
-import { findPixelPositionByTile, baseUnitSize } from "../../gameConfig";
-import testImage from '../../assets/menu/banner.png';
+import { useSelector, useDispatch } from "react-redux";
+import { findPixelPositionByTile, baseUnitSize, playerSize, playerAnimation } from "../../gameConfig";
 
 export default props => {
     const dispatch = useDispatch();
     const playerData = useSelector(state => state.player);
     const loadedLevel = useSelector(state => state.loadedLevel);
+    const { size, position, currentUpgrade } = playerData;
 
-    // executed on mount
-    /*useEffect(() => {
-        // setup game loop
-        const gameLoop = setInterval(() => {
-            // todo
-            // this loop body will be used to move entities
-        }, 41.6);
-
-        // cleanup on unmount
-        return () => {
-            clearInterval(gameLoop);
-        }
-    }, []);*/
+    // get player height / width values
+    // get player animation values
+    const { width, height } = playerSize.find(playerSize => playerSize.id === size);
+    const playerAnimationData = playerAnimation.find(animationData => animationData.playerId === size);
 
     return (
         <CanvasBackground
@@ -50,13 +41,21 @@ export default props => {
                                                 height={HEIGHT}
                                                 animationData={tile.materialAnimation}
                                             />
-                                        )
+                                        );
                                     }
                                 }
                             ).filter(tile => tile !== undefined & tile !== null)
                         ).flatMap(column => [...column])
                 }
             </Layer>
+            <AnimatedPlayer
+                x={width}
+                y={height}
+                width={position.x}
+                height={position.y}
+                playerMovement={}
+                animationData={playerAnimationData}
+            />
         </CanvasBackground>
     );
 };
