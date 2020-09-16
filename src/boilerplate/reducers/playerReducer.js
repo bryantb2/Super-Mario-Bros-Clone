@@ -8,10 +8,10 @@ import {
 
 const initialState = {
     size: playerSize[0].id,
-    movementType: playerMovement.STAND,
     position: {
         x: baseUnitSize().WIDTH,
-        y: baseUnitSize().HEIGHT * (gameGrid.RENDERABLE_HEIGHT - 2)
+        y: baseUnitSize().HEIGHT * (gameGrid.RENDERABLE_HEIGHT - 2),
+        movementType: playerMovement.STAND
     },
     currentUpgrade: null
 };
