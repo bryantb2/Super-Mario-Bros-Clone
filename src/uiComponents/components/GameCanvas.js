@@ -46,17 +46,18 @@ export const AnimatedMaterial = props => {
         const baseAnimation = animations.find(animData =>
             animData.type === animationTypes.BASE_ANIMATION);
         if (baseAnimation !== undefined && baseAnimation.imageFrames.length >= 2) {
+            const { imageFrames, cycleTime } = baseAnimation;
             // create timer for base animation
             setTimeout(() => {
                 // get index of current material in state
-                const materialIndex = baseAnimation.imageFrames
+                const materialIndex = imageFrames
                     .findIndex(material => material === rawImage);
                 // check if next frame or first frame should be used
-                const nextMaterial = materialIndex >= baseAnimation.imageFrames.length - 1
-                    ? baseAnimation.imageFrames[0] : baseAnimation.imageFrames[materialIndex + 1];
+                const nextMaterial = materialIndex >= imageFrames.length - 1
+                    ? imageFrames[0] : imageFrames[materialIndex + 1];
                 // set state of image
                 setImage(nextMaterial);
-            }, baseAnimation.cycleTime);
+            }, cycleTime);
         }
     }, [rawImage]);
 
@@ -74,17 +75,46 @@ export const AnimatedMaterial = props => {
 
 export const AnimatedPlayer = props => {
     // destructure props
-    const { x,  y,  animationData: { restingSprite, animations }, width, height } = props;
+    const { x, y, animationData: { restingSprite, animations }, width, height, playerMovement } = props;
+    // build initial image and image state
+    const [animationFrame, setNextFrame] = useState(restingSprite);
 
-    // todo
+    useEffect(() => {
+        // find animation data by movement type
+        const movementAnimation = animations.find(animation => animation.type === playerMovement);
+        if (movementAnimation !== undefined && movementAnimation.imageFrames !== 0) {
+            const { imageFrames, cycleTime } = movementAnimation;
+            // set delayed animation frame
+            setTimeout(() => {
+                let nextFrame;
+                // check if current frame is in found data (if it is not, that means the movement type changed)
+                const newAnimation = imageFrames.includes(animationFrame);
+                if (!newAnimation) {
+                    // set first frame of new animation
+                    nextFrame = imageFrames[0];
+                } else {
+                    // get index of current frame
+                    const frameIndex = imageFrames
+                        .findIndex(frame => frame === animationFrame);
+                    // check if next frame or first frame should be used
+                    nextFrame = frameIndex >= imageFrames.length - 1
+                        ? imageFrames[0] : imageFrames[frameIndex + 1];
+                }
+                setNextFrame(nextFrame);
+            }, cycleTime);
+        } else if (animationFrame !== restingSprite) {
+            // set to default image if animation data was not found
+            setNextFrame(restingSprite);
+        }
+    }, [animationFrame, playerMovement]);
 
     return (
         <GameImage
-            x={position.x}
-            y={position.y}
-            width={sizeObject.width}
-            height={sizeObject.height}
-            src={}
+            x={x}
+            y={y}
+            width={width}
+            height={height}
+            src={animationFrame}
         />
     );
 }

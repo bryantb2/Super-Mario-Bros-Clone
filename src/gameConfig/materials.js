@@ -282,7 +282,7 @@ export const playerAnimation = (
             animations: [
                 {
                     type: playerMovement.WALK,
-                    cycleTime: 1000,
+                    cycleTime: 1500,
                     imageFrames: [
                         S_MARIO_INITIAL_WALK,
                         S_MARIO_MID_WALK,
@@ -298,7 +298,7 @@ export const playerAnimation = (
                 },
                 {
                     type: playerMovement.SPRINT,
-                    cycleTime: 1000,
+                    cycleTime: 500,
                     imageFrames: [
                         S_MARIO_INITIAL_SPRINT,
                         S_MARIO_INITIAL_WALK,

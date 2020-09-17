@@ -19,6 +19,7 @@ export default props => {
     const { width, height } = playerSize.find(playerSize => playerSize.id === size);
     const playerAnimationData = playerAnimation.find(animationData => animationData.playerId === size);
 
+
     return (
         <CanvasBackground
             imageTranslation={0}
@@ -47,15 +48,15 @@ export default props => {
                             ).filter(tile => tile !== undefined & tile !== null)
                         ).flatMap(column => [...column])
                 }
+                <AnimatedPlayer
+                    width={width * baseUnitSize().WIDTH}
+                    height={height * baseUnitSize().HEIGHT}
+                    x={position.x}
+                    y={position.y}
+                    playerMovement={position.movementType}
+                    animationData={playerAnimationData}
+                />
             </Layer>
-            <AnimatedPlayer
-                x={width}
-                y={height}
-                width={position.x}
-                height={position.y}
-                playerMovement={}
-                animationData={playerAnimationData}
-            />
         </CanvasBackground>
     );
 };
