@@ -12,7 +12,7 @@ import {
     playerSize,
     playerAnimation,
     playerMovement,
-    renderingData
+    renderingData, physicsData
 } from "../../gameConfig";
 import { setPlayerMovementDirection, setPlayerMovementType } from "../../boilerplate/actions";
 
@@ -39,9 +39,9 @@ export default props => {
     const { width, height } = playerSize.find(playerSize => playerSize.id === size);
     const playerAnimationData = playerAnimation.find(animationData => animationData.playerId === size);
 
-    // tracking which action keys are pressed
-    const [actionKeys, setActionKeys] = useState([]);
-
+    const isJumping = () => false; // todo: add calc to determine if player is on ground or object
+    const isAtWalkingVelocity = () => horizontalVelocity > 0 && horizontalVelocity <= physicsData.MAX_WALK_VELOCITY;
+    const isAtSprintingVelocity = () => horizontalVelocity > physicsData.MAX_WALK_VELOCITY && horizontalVelocity <= physicsData.MAX_SPRINT_VELOCITY;
     const isDirectionKey = (pressedKey) =>
         [playerMovement.LEFT_KEY, playerMovement.RIGHT_KEY].includes(pressedKey);
     const isDirectionalEnhancer = (pressedKey) =>
@@ -68,20 +68,51 @@ export default props => {
             if (handleType === 'begin')
                 // set direction in state
                 dispatch(setPlayerMovementDirection(pressedKey));
-            else if (movementDirection === pressedKey) {
+            else if (movementDirection === pressedKey)
                 // cancel movement direction (only if the current key in redux is the released key)
                 dispatch(setPlayerMovementDirection(null));
-            }
         } else if (isDirectionalEnhancer(pressedKey)) {
-            if (handleType === 'begin')
-                // set movement action
-                dispatch(setPlayerMovementType(convertKeyToAction(pressedKey)));
-            else if (movementType === pressedKey) {
-                // todo: figure out when to set standing, sprint, and remove jump after time
-                dispatch(setPlayerMovementType(playerMovement.STAND));
+            // convert to action
+            const convertedAction = convertKeyToAction(pressedKey);
+            // check if pressed or released
+            if (handleType === 'begin') {
+                // set movement action, if not in middle of jump
+                if (movementType !== playerMovement.JUMP)
+                    dispatch(setPlayerMovementType(convertedAction));
+            } else if (movementType === convertedAction) {
+                if (convertedAction === playerMovement.SPRINT && movementDirection !== null) {
+                    // set to walk since directional is still applied and sprint key was released
+                    dispatch(setPlayerMovementType(playerMovement.WALK));
+                } else if (convertedAction === playerMovement.JUMP && !isJumping()) {
+                    // only set sprint/walk values if the jump has concluded
+                    if (isAtWalkingVelocity())
+                        dispatch(setPlayerMovementType(playerMovement.WALK));
+                    else if (isAtSprintingVelocity() && movementDirection !== null)
+                        dispatch(setPlayerMovementType(playerMovement.SPRINT));
+                } else if (convertedAction === playerMovement.CROUCH) {
+                    // a player CANNOT move when crouching, so it defaults back to standing
+                    dispatch(setPlayerMovementType(playerMovement.STAND));
+                }
             }
         }
+
+        // check velocity
+        // check directional type
+        // check released action type
+        /*
+        - only one direction can be applied at one time
+        - only one movement type can be applied at one time
+        - releasing a directional results in a null move
+        - releasing an movement type results in the following:
+            - if jump was released, set to walk, sprint, or crouch
+            - if sprint was released, set to walk
+            - otherwise set to stand
+         */
     };
+
+    useEffect(() => {
+        // todo: handle jump ends, physics calculations, ect.
+    }, []);
 
     // executes when movement changes
     /*useEffect(() => {

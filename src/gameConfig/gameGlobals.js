@@ -39,9 +39,9 @@ export const physicsData = {
     MAX_JUMP_HEIGHT_STANDING: 4,
     MAX_JUMP_HEIGHT_WALKING: 4.25,
     MAX_JUMP_HEIGHT_SPRINT: 5.5,
-    MAX_SPRINT_VELOCITY: 11.5,
     // max velocities
     MAX_WALK_VELOCITY: 4.75,
+    MAX_SPRINT_VELOCITY: 11.5,
     MAX_JUMP_VELOCITY: 3,
     MAX_GRAVITY_VELOCITY: 4,
     // acceleration values
