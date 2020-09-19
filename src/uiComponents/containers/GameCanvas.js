@@ -14,7 +14,7 @@ import {
     playerMovement,
     renderingData
 } from "../../gameConfig";
-import { setPlayerPosition } from "../../boilerplate/actions";
+import { setPlayerMovementDirection, setPlayerMovementType } from "../../boilerplate/actions";
 
 export default props => {
     const dispatch = useDispatch();
@@ -26,6 +26,7 @@ export default props => {
             x,
             y,
             movementType,
+            movementDirection,
             horizontalVelocity,
             verticalVelocity,
             yMoveStartTime,
@@ -37,6 +38,68 @@ export default props => {
     // get player height / width AND animation values
     const { width, height } = playerSize.find(playerSize => playerSize.id === size);
     const playerAnimationData = playerAnimation.find(animationData => animationData.playerId === size);
+
+    // tracking which action keys are pressed
+    const [actionKeys, setActionKeys] = useState([]);
+
+    const isDirectionKey = (pressedKey) =>
+        [playerMovement.LEFT_KEY, playerMovement.RIGHT_KEY].includes(pressedKey);
+    const isDirectionalEnhancer = (pressedKey) =>
+        [playerMovement.DOWN_KEY, playerMovement.RUN_KEY, playerMovement.JUMP_KEY].includes(pressedKey);
+    const convertKeyToAction = key => {
+        // converts any directional enhancers to player action constants
+        switch(key) {
+            case (playerMovement.RUN_KEY):
+                return playerMovement.SPRINT;
+            case (playerMovement.JUMP_KEY):
+                return playerMovement.JUMP;
+            case (playerMovement.DOWN_KEY):
+                return playerMovement.CROUCH;
+            default:
+                return playerMovement.STAND;
+        }
+    }
+
+    // event handler
+    const handleMove = handleType => e => {
+        // determine how to handle the input
+        const pressedKey = e.key.toUpperCase();
+        if (isDirectionKey(pressedKey)) {
+            if (handleType === 'begin')
+                // set direction in state
+                dispatch(setPlayerMovementDirection(pressedKey));
+            else if (movementDirection === pressedKey) {
+                // cancel movement direction (only if the current key in redux is the released key)
+                dispatch(setPlayerMovementDirection(null));
+            }
+        } else if (isDirectionalEnhancer(pressedKey)) {
+            if (handleType === 'begin')
+                // set movement action
+                dispatch(setPlayerMovementType(convertKeyToAction(pressedKey)));
+            else if (movementType === pressedKey) {
+                // todo: figure out when to set standing, sprint, and remove jump after time
+                dispatch(setPlayerMovementType(playerMovement.STAND));
+            }
+        }
+    };
+
+    // executes when movement changes
+    /*useEffect(() => {
+        switch (e.key.toUpperCase()) {
+            case playerMovement.DOWN_KEY:
+                moveDown();
+            case playerMovement.LEFT_KEY:
+                moveLeft();
+            case playerMovement.RIGHT_KEY:
+                moveRight();
+            case playerMovement.RUN_KEY:
+                sprint();
+            case playerMovement.JUMP_KEY:
+                jump();
+            default:
+                return null;
+        }
+    }, [moveDirections])
 
     const moveRight = () => {
         // calculate x position
@@ -54,44 +117,7 @@ export default props => {
     };
     const jump = () => {
         console.log('jump');
-    };
-
-    const isDirectionKey = (pressedKey) =>
-        [playerMovement.DOWN_KEY, playerMovement.LEFT_KEY, playerMovement.RIGHT_KEY].includes(pressedKey);
-
-    // event handler
-    const handleMove = handleType => e => {
-        // determine how to handle the input
-        const pressedKey = e.key.toUpperCase();
-        if (isDirectionKey(pressedKey)) {
-            if (handleType === 'begin')
-                // set direction in state
-                setMoveDirection(pressedKey);
-            else {
-                // cancel movement direction
-                if (moveDirection === pressedKey)
-                    setMoveDirection(null);
-            }
-        }
-    };
-
-    // executes when movement changes
-    useEffect(() => {
-        switch (e.key.toUpperCase()) {
-            case playerMovement.DOWN_KEY:
-                moveDown();
-            case playerMovement.LEFT_KEY:
-                moveLeft();
-            case playerMovement.RIGHT_KEY:
-                moveRight();
-            case playerMovement.RUN_KEY:
-                sprint();
-            case playerMovement.JUMP_KEY:
-                jump();
-            default:
-                return null;
-        }
-    }, [moveDirections])
+    };*/
 
     // executes on mount
     useEffect(() => {

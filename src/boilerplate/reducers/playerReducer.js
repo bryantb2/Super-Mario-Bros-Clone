@@ -12,7 +12,7 @@ const initialState = {
         x: baseUnitSize().WIDTH,
         y: baseUnitSize().HEIGHT * (gameGrid.RENDERABLE_HEIGHT - 3.5),
         movementType: playerMovement.STAND,
-        movementDirection: playerMovement.RIGHT_KEY,
+        movementDirection: null,
         horizontalVelocity: 0,
         verticalVelocity: 0,
         yMoveStartTime: null, // controls vertical acceleration of movements

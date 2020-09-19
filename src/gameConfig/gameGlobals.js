@@ -65,14 +65,13 @@ export const playerSize = [
 
 export const playerMovement = {
     // actions
-    STAND:   'STANDING',
-    WALK:    'WALKING',
-    JUMP:    'JUMP',
-    CROUCH:  'CROUCHING',
-    SWIM:    'SWIMMING',
+    CROUCH:  'CROUCH',
+    STAND:   'STAND',
+    WALK:    'WALK',
     SPRINT:  'SPRINT',
-    // directional keybinds
-    //UP_KEY:      'W',
+    JUMP:    'JUMP',
+    SWIM:    'SWIM',
+    // directional key binds
     DOWN_KEY:    'S',
     LEFT_KEY:    'A',
     RIGHT_KEY:   'D',
