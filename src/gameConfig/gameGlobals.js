@@ -18,16 +18,36 @@ export const animationTypes = {
     DESTROY_ANIMATION:  'DESTROY_ANIMATION' // transitions are animations that occur once when a material is being destroyed
 };
 
-export const playerData = {
+/*export const playerData = {
     // height / width values are values multiplied relative to base units object
-    JUMP_HEIGHT_STANDING:   4,
-    JUMP_HEIGHT_WALKING:    4.25,
-    JUMP_HEIGHT_RUNNING:    5,
-    JUMP_HEIGHT_SPRINT:     5.5,
-    JUMP_DISTANCE_STANDING: 0,
-    JUMP_DISTANCE_WALKING:  4.75,
-    JUMP_DISTANCE_RUNNING:  8.5,
-    JUMP_DISTANCE_SPRINT:   11.5,
+    //JUMP_HEIGHT_RUNNING:    5,
+    //JUMP_DISTANCE_STANDING: 0,
+    //JUMP_DISTANCE_WALKING:  4.75,
+    //JUMP_DISTANCE_RUNNING:  8.5,
+    //JUMP_DISTANCE_SPRINT:   11.5,
+};*/
+
+export const renderingData = {
+    frameRate: 24,
+    frameTimeMS: 1000 / 24
+}
+
+export const physicsData = {
+    // UNIT OF TIME IS IN SECONDS
+    // all values are relative multipliers to the base unit width and height
+    // jump heights
+    MAX_JUMP_HEIGHT_STANDING: 4,
+    MAX_JUMP_HEIGHT_WALKING: 4.25,
+    MAX_JUMP_HEIGHT_SPRINT: 5.5,
+    MAX_SPRINT_VELOCITY: 11.5,
+    // max velocities
+    MAX_WALK_VELOCITY: 4.75,
+    MAX_JUMP_VELOCITY: 3,
+    MAX_GRAVITY_VELOCITY: 4,
+    // acceleration values
+    HORIZONTAL_ACCEL: 2,
+    JUMP_ACCEL: 1.5,
+    GRAVITY_ACCEL: -2.5
 };
 
 export const playerSize = [
@@ -51,12 +71,13 @@ export const playerMovement = {
     CROUCH:  'CROUCHING',
     SWIM:    'SWIMMING',
     SPRINT:  'SPRINT',
-    // directions
-    UP:      'W',
-    DOWN:    'S',
-    LEFT:    'A',
-    RIGHT:   'D',
-    RUN:     'SHIFT'
+    // directional keybinds
+    //UP_KEY:      'W',
+    DOWN_KEY:    'S',
+    LEFT_KEY:    'A',
+    RIGHT_KEY:   'D',
+    RUN_KEY:     'SHIFT',
+    JUMP_KEY:    ' '
 };
 
 

@@ -4,7 +4,49 @@ import actionTypes from "../actionTypes";
 export const setPlayerPosition = (xPos, yPos, movementType) => dispatch => (
     dispatch({
         type: actionTypes.SET_PLAYER_POSITION,
-        payload: { x: xPos, y: yPos, movementType }
+        payload: { x: xPos, y: yPos }
+    })
+);
+
+export const setPlayerMovementType = movementType => dispatch => (
+    dispatch({
+        type: actionTypes.SET_MOVEMENT_TYPE,
+        payload: movementType
+    })
+);
+
+export const setPlayerMovementDirection = movementDirection => dispatch => (
+    dispatch({
+        type: actionTypes.SET_MOVEMENT_DIRECTION,
+        payload: movementDirection
+    })
+);
+
+export const setPlayerVerticalVelocity = verticalVelocity => dispatch => (
+    dispatch({
+        type: actionTypes.SET_VERTICAL_VELOCITY,
+        payload: verticalVelocity
+    })
+);
+
+export const setPlayerHorizontalVelocity = horizontalVelocity => dispatch => (
+    dispatch({
+        type: actionTypes.SET_HORIZONTAL_VELOCITY,
+        payload: horizontalVelocity
+    })
+);
+
+export const setPlayerYMoveStartTime = startTime => dispatch => (
+    dispatch({
+        type: actionTypes.SET_Y_MOVE_START_TIME,
+        payload: startTime
+    })
+);
+
+export const setPlayerXMoveStartTime = startTime => dispatch => (
+    dispatch({
+        type: actionTypes.SET_X_MOVE_START_TIME,
+        payload: startTime
     })
 );
 

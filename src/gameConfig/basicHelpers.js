@@ -34,3 +34,7 @@ export const findPixelPositionByTile = (columnIndex, rowIndex) => ({
     //y: ((gameGrid.RENDERABLE_HEIGHT - (rowIndex + 1)) * baseUnitSize.HEIGHT) + baseUnitSize.HEIGHT
 });
 
+// calculate final velocity
+export const calculateFinalV = (velocityInitial, secondsSinceStart, acceleration) => velocityInitial + (secondsSinceStart * acceleration);
+
+
