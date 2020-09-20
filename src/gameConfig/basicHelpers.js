@@ -52,7 +52,7 @@ export const isTouchingFloor = (playerWidth, playerHeight, playerXPos, playerYPo
     // check that player is touching at least one solid object
     return collisionCoordinates.length >= 1;
 };
-export const getCollisionCoordinates = (objectWidth, objectHeight, xPos, yPos, grid) => {
+export const getCollisionCoordinates = (objectWidth, objectHeight, xPos, yPos, gameGrid) => {
     // check each of the box model corner
     const boxModel = buildPlayerBoxModel(objectWidth, objectHeight, xPos, yPos);
     let foundCollisions = [];
@@ -61,7 +61,7 @@ export const getCollisionCoordinates = (objectWidth, objectHeight, xPos, yPos, g
         const { x, y } = modelVertex;
         // get grid tile by coordinates
         const tileIndexes = findTilePositionByPixel(x, y);
-        const gameTile = grid[tileIndexes.x][tileIndexes.y];
+        const gameTile = gameGrid[tileIndexes.x][tileIndexes.y];
         if (gameTile !== null && gameTile !== undefined)
             // add game tile coordinates to collision list
             foundCollisions.push(modelVertex);

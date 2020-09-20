@@ -41,18 +41,21 @@ export default props => {
         currentUpgrade
     } = playerData;
 
-    // get player height / width AND animation values
-    const { width, height } = playerSize.find(playerSize => playerSize.id === size);
+    // player height/width, position, and animation values
+    const { WIDTH: baseUnitWidth, HEIGHT: baseUnitHeight } = baseUnitSize();
     const playerAnimationData = playerAnimation.find(animationData => animationData.playerId === size);
-
-    useEffect(() => {
-        console.log('movement direction updated: ' + movementDirection);
-    }, [movementDirection]);
+    const playerDimensions = playerSize.find(playerSize => playerSize.id === size);
+    const playerWidth = playerDimensions.width * baseUnitWidth;
+    const playerHeight = playerDimensions.height * baseUnitHeight;
+    const playerXPos = x + horizontalVelocity;
+    const playerYPos = y + verticalVelocity;
 
     // event handler
     const handleMove = handleType => e => {
         const {
             position: {
+                x,
+                y,
                 movementType,
                 movementDirection,
                 horizontalVelocity,
@@ -77,28 +80,26 @@ export default props => {
                 dispatch(setPlayerMovementDirection(pressedKey));
                 dispatch(setPlayerMovementType(playerMovement.WALK));
             } else if (handleType === 'end' && movementDirection === pressedKey) {
-                // cancel movement direction (only if the current key in redux is the released key)
-                // cancel movement type as well
+                // cancel movement and direction
                 dispatch(setPlayerMovementDirection(null));
                 dispatch(setPlayerMovementType(playerMovement.STAND));
             }
         } else if (isDirectionalEnhancer(pressedKey)) {
             const convertedAction = convertKeyToAction(pressedKey);
-            // only if begin and pressed key is not the current one
+            const touchingFloor = isTouchingFloor(playerWidth, playerHeight, x, y);
             if (handleType === 'begin' && movementType !== convertedAction) {
                 // set movement action, or block movement if a jump is in progress
                 if (movementType !== playerMovement.JUMP && movementDirection != null)
                     dispatch(setPlayerMovementType(convertedAction));
                 // only dispatch jump or crouch movement if player was already touching floor
-                else if ((convertedAction === playerMovement.JUMP && isTouchingFloor())
-                          || convertedAction === playerMovement.CROUCH)
+                else if ((convertedAction === playerMovement.JUMP && touchingFloor) || convertedAction === playerMovement.CROUCH)
                     dispatch(setPlayerMovementType(convertedAction));
             } else if (handleType === 'end' && movementType === convertedAction) {
                 // only if end and released key is one in redux
-                if (convertedAction === playerMovement.SPRINT && movementDirection !== null) {
+                if (convertedAction === playerMovement.SPRINT && movementDirection !== null)
                     // set to walk since directional is still applied and sprint key was released
                     dispatch(setPlayerMovementType(playerMovement.WALK));
-                } else if (convertedAction === playerMovement.JUMP && !isTouchingFloor()) {
+                else if (convertedAction === playerMovement.JUMP && !touchingFloor) {
                     // only set sprint/walk values if the jump has concluded
                     if (isAtWalkingVelocity(horizontalVelocity))
                         dispatch(setPlayerMovementType(playerMovement.WALK));
@@ -112,14 +113,14 @@ export default props => {
         }
     };
 
-    /*useEffect(() => {
+    useEffect(() => {
         // todo: handle jump ends, physics calculations, ect.
         const movementTimer = setInterval(() => {
             // check horizontal direction
 
         },);
         return () => clearInterval(movementTimer);
-    }, [movementType, movementDirection]);*/
+    }, [movementType, movementDirection]);
 
     // executes on mount
     useEffect(() => {
@@ -146,14 +147,13 @@ export default props => {
                             column.map((tile, rowIndex) => {
                                     if (tile !== undefined && tile !== null) {
                                         const pixelPosition = findPixelPositionByTile(columnIndex, rowIndex);
-                                        const { WIDTH, HEIGHT } = baseUnitSize();
                                         return (
                                             <AnimatedMaterial
                                                 key={tile.instanceId}
-                                                x={pixelPosition.x - WIDTH /*translate left since width is measured from right edge*/}
-                                                y={pixelPosition.y - HEIGHT /*translate up since height is measured from top edge*/}
-                                                width={WIDTH}
-                                                height={HEIGHT}
+                                                x={pixelPosition.x - baseUnitWidth /*translate left since width is measured from right edge*/}
+                                                y={pixelPosition.y - baseUnitHeight /*translate up since height is measured from top edge*/}
+                                                width={baseUnitWidth}
+                                                height={baseUnitHeight}
                                                 animationData={tile.materialAnimation}
                                             />
                                         );
@@ -163,10 +163,10 @@ export default props => {
                         ).flatMap(column => [...column])
                 }
                 <AnimatedPlayer
-                    width={width * baseUnitSize().WIDTH}
-                    height={height * baseUnitSize().HEIGHT}
-                    x={x + horizontalVelocity}
-                    y={y + verticalVelocity}
+                    width={playerWidth}
+                    height={playerHeight}
+                    x={playerXPos}
+                    y={playerYPos}
                     playerMovement={movementType}
                     animationData={playerAnimationData}
                 />
