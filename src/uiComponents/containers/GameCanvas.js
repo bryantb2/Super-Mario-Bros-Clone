@@ -12,7 +12,9 @@ import {
     playerSize,
     playerAnimation,
     playerMovement,
-    renderingData, physicsData
+    renderingData,
+    isAtSprintingVelocity,
+    isAtWalkingVelocity
 } from "../../gameConfig";
 import { setPlayerMovementDirection, setPlayerMovementType } from "../../boilerplate/actions";
 
@@ -40,8 +42,6 @@ export default props => {
     const playerAnimationData = playerAnimation.find(animationData => animationData.playerId === size);
 
     const isJumping = () => false; // todo: add calc to determine if player is on ground or object
-    const isAtWalkingVelocity = () => horizontalVelocity > 0 && horizontalVelocity <= physicsData.MAX_WALK_VELOCITY;
-    const isAtSprintingVelocity = () => horizontalVelocity > physicsData.MAX_WALK_VELOCITY && horizontalVelocity <= physicsData.MAX_SPRINT_VELOCITY;
     const isDirectionKey = (pressedKey) =>
         [playerMovement.LEFT_KEY, playerMovement.RIGHT_KEY].includes(pressedKey);
     const isDirectionalEnhancer = (pressedKey) =>
@@ -62,6 +62,15 @@ export default props => {
 
     // event handler
     const handleMove = handleType => e => {
+        /*
+        - only one direction can be applied at one time
+        - only one movement type can be applied at one time
+        - releasing a directional results in a null move
+        - releasing an movement type results in the following:
+            - if jump was released, set to walk, sprint, or crouch
+            - if sprint was released, set to walk
+            - otherwise set to stand
+         */
         // determine how to handle the input
         const pressedKey = e.key.toUpperCase();
         if (isDirectionKey(pressedKey)) {
@@ -76,7 +85,7 @@ export default props => {
             const convertedAction = convertKeyToAction(pressedKey);
             // check if pressed or released
             if (handleType === 'begin') {
-                // set movement action, if not in middle of jump
+                // set movement action, or block movement if a jump is in progress
                 if (movementType !== playerMovement.JUMP)
                     dispatch(setPlayerMovementType(convertedAction));
             } else if (movementType === convertedAction) {
@@ -85,9 +94,9 @@ export default props => {
                     dispatch(setPlayerMovementType(playerMovement.WALK));
                 } else if (convertedAction === playerMovement.JUMP && !isJumping()) {
                     // only set sprint/walk values if the jump has concluded
-                    if (isAtWalkingVelocity())
+                    if (isAtWalkingVelocity(horizontalVelocity))
                         dispatch(setPlayerMovementType(playerMovement.WALK));
-                    else if (isAtSprintingVelocity() && movementDirection !== null)
+                    else if (isAtSprintingVelocity(horizontalVelocity) && movementDirection !== null)
                         dispatch(setPlayerMovementType(playerMovement.SPRINT));
                 } else if (convertedAction === playerMovement.CROUCH) {
                     // a player CANNOT move when crouching, so it defaults back to standing
@@ -95,60 +104,16 @@ export default props => {
                 }
             }
         }
-
-        // check velocity
-        // check directional type
-        // check released action type
-        /*
-        - only one direction can be applied at one time
-        - only one movement type can be applied at one time
-        - releasing a directional results in a null move
-        - releasing an movement type results in the following:
-            - if jump was released, set to walk, sprint, or crouch
-            - if sprint was released, set to walk
-            - otherwise set to stand
-         */
     };
 
     useEffect(() => {
         // todo: handle jump ends, physics calculations, ect.
-    }, []);
+        const movementTimer = setInterval(() => {
+            // check horizontal direction
 
-    // executes when movement changes
-    /*useEffect(() => {
-        switch (e.key.toUpperCase()) {
-            case playerMovement.DOWN_KEY:
-                moveDown();
-            case playerMovement.LEFT_KEY:
-                moveLeft();
-            case playerMovement.RIGHT_KEY:
-                moveRight();
-            case playerMovement.RUN_KEY:
-                sprint();
-            case playerMovement.JUMP_KEY:
-                jump();
-            default:
-                return null;
-        }
-    }, [moveDirections])
-
-    const moveRight = () => {
-        // calculate x position
-        // set movement type
-        console.log('move right');
-    };
-    const moveLeft = () => {
-        console.log('move left');
-    };
-    const moveDown = () => {
-        console.log('move down');
-    };
-    const sprint = () => {
-        console.log('sprint');
-    };
-    const jump = () => {
-        console.log('jump');
-    };*/
+        },);
+        return () => clearInterval(movementTimer);
+    }, [movementType, movementDirection]);
 
     // executes on mount
     useEffect(() => {
@@ -194,8 +159,8 @@ export default props => {
                 <AnimatedPlayer
                     width={width * baseUnitSize().WIDTH}
                     height={height * baseUnitSize().HEIGHT}
-                    x={x}
-                    y={y}
+                    x={x + horizontalVelocity}
+                    y={y + verticalVelocity}
                     playerMovement={movementType}
                     animationData={playerAnimationData}
                 />

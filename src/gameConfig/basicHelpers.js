@@ -1,4 +1,4 @@
-import { baseUnitSize, gameGrid } from "./gameGlobals";
+import { baseUnitSize, gameGrid, physicsData } from "./gameGlobals";
 
 export const guidGenerator = () => {
     return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
@@ -35,6 +35,99 @@ export const findPixelPositionByTile = (columnIndex, rowIndex) => ({
 });
 
 // calculate final velocity
-export const calculateFinalV = (velocityInitial, secondsSinceStart, acceleration) => velocityInitial + (secondsSinceStart * acceleration);
+export const calculateFinalV = (velocityInitial, secondsSinceStart, acceleration) =>
+    velocityInitial + (secondsSinceStart * acceleration);
 
+// velocity checkers
+export const isAtWalkingVelocity = (horizontalVelocity) =>
+    horizontalVelocity > 0 && horizontalVelocity <= physicsData.MAX_WALK_VELOCITY;
+export const isAtSprintingVelocity = (horizontalVelocity) =>
+    horizontalVelocity > physicsData.MAX_WALK_VELOCITY && horizontalVelocity <= physicsData.MAX_SPRINT_VELOCITY;
 
+// collision checker
+export const isTouchingFloor = (playerWidth, playerHeight, playerXPos, playerYPos, gameGrid) => {
+    // get collision coordinates for player
+    const collisionCoordinates =
+        getCollisionCoordinates(playerWidth, playerHeight, playerXPos, playerYPos, gameGrid)
+            .filter(collisionCoord => collisionCoord.yLabel === 'BOTTOM');
+    // check that player is touching at least one solid object
+    return collisionCoordinates.length >= 1;
+};
+
+export const hasCollidedInDirection = (playerWidth, playerHeight, playerXPos, playerYPos, gameGrid, collisionDirection) => {
+    // get collision coordinates
+    const collisionCoordinates =
+        getCollisionCoordinates(playerWidth, playerHeight, playerXPos, playerYPos, gameGrid);
+    // find coordinates based on direction
+    const directionalCoordinatesFound = collisionCoordinates
+        .find(collision =>
+            collision.xLabel === collisionDirection.toUpperCase()
+            || collision.yLabel === collisionDirection.toUpperCase()
+        );
+    return directionalCoordinatesFound !== undefined && directionalCoordinatesFound.length >= 1;
+};
+
+export const getCollisionCoordinates = (objectWidth, objectHeight, xPos, yPos, grid) => {
+    // check each of the box model corner
+    const boxModel = buildPlayerBoxModel(objectWidth, objectHeight, xPos, yPos);
+    let foundCollisions = [];
+    // loop through box model coordinates
+    for (const modelVertex of boxModel) {
+        const { x, y } = modelVertex;
+        // get grid tile by coordinates
+        const tileIndexes = findTilePositionByPixel(x, y);
+        const gameTile = grid[tileIndexes.x][tileIndexes.y];
+        if (gameTile !== null && gameTile !== undefined)
+            // add game tile coordinates to collision list
+            foundCollisions.push(modelVertex);
+    }
+    return foundCollisions;
+};
+
+const buildPlayerBoxModel = (playerWidth, playerHeight, playerXPos, playerYPos) => {
+    // build box model coordinates of player
+    const topLeft = {
+        xLabel: 'LEFT',
+        yLabel: 'TOP',
+        x: playerXPos - (playerWidth / 2),
+        y: playerYPos + (playerHeight / 2)
+    };
+    const topRight = {
+        xLabel: 'RIGHT',
+        yLabel: 'TOP',
+        x: playerXPos + (playerWidth / 2),
+        y: playerYPos + (playerHeight / 2)
+    };
+    const bottomLeft = {
+        xLabel: 'LEFT',
+        yLabel: 'BOTTOM',
+        x: playerXPos - (playerWidth / 2),
+        y: playerYPos - (playerHeight / 2)
+    };
+    const bottomRight = {
+        xLabel: 'RIGHT',
+        yLabel: 'BOTTOM',
+        x: playerXPos + (playerWidth / 2),
+        y: playerYPos - (playerHeight / 2)
+    };
+    return [topLeft, topRight, bottomLeft, bottomRight];
+}
+
+/*
+if (collisionCoordinates.length >= 1) {
+        // map coordinates to game grid objects
+        const gridCollisionObjects = collisionCoordinates.map(coordinates => {
+            // get tile indexes
+            const tileIndexes = findTilePositionByPixel(coordinates.x, coordinates.y);
+            return gameGrid[tileIndexes.x][tileIndexes.y];
+        });
+        let anyLethalCollision = false;
+        gridCollisionObjects.forEach(collisionObject => {
+            // ensure all of the "floor" collisions are safe
+            if (collisionObject.isLethal)
+                anyLethalCollision = true;
+        });
+        return anyLethalCollision;
+    }
+    return false;
+ */
