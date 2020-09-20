@@ -1,4 +1,4 @@
-import { baseUnitSize, gameGrid, physicsData } from "./gameGlobals";
+import {baseUnitSize, gameGrid, physicsData, playerMovement} from "./gameGlobals";
 
 export const guidGenerator = () => {
     return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
@@ -31,7 +31,6 @@ export const findTilePositionByPixel = (xPos, yPos) => ({
 export const findPixelPositionByTile = (columnIndex, rowIndex) => ({
     x: (columnIndex + 1 ) * baseUnitSize().WIDTH, // right edge
     y: (rowIndex + 1) * baseUnitSize().HEIGHT  // top edge (element 0 is actually top of screen, so index must be reversed for height)
-    //y: ((gameGrid.RENDERABLE_HEIGHT - (rowIndex + 1)) * baseUnitSize.HEIGHT) + baseUnitSize.HEIGHT
 });
 
 // calculate final velocity
@@ -53,20 +52,6 @@ export const isTouchingFloor = (playerWidth, playerHeight, playerXPos, playerYPo
     // check that player is touching at least one solid object
     return collisionCoordinates.length >= 1;
 };
-
-export const hasCollidedInDirection = (playerWidth, playerHeight, playerXPos, playerYPos, gameGrid, collisionDirection) => {
-    // get collision coordinates
-    const collisionCoordinates =
-        getCollisionCoordinates(playerWidth, playerHeight, playerXPos, playerYPos, gameGrid);
-    // find coordinates based on direction
-    const directionalCoordinatesFound = collisionCoordinates
-        .find(collision =>
-            collision.xLabel === collisionDirection.toUpperCase()
-            || collision.yLabel === collisionDirection.toUpperCase()
-        );
-    return directionalCoordinatesFound !== undefined && directionalCoordinatesFound.length >= 1;
-};
-
 export const getCollisionCoordinates = (objectWidth, objectHeight, xPos, yPos, grid) => {
     // check each of the box model corner
     const boxModel = buildPlayerBoxModel(objectWidth, objectHeight, xPos, yPos);
@@ -83,7 +68,6 @@ export const getCollisionCoordinates = (objectWidth, objectHeight, xPos, yPos, g
     }
     return foundCollisions;
 };
-
 const buildPlayerBoxModel = (playerWidth, playerHeight, playerXPos, playerYPos) => {
     // build box model coordinates of player
     const topLeft = {
@@ -112,6 +96,25 @@ const buildPlayerBoxModel = (playerWidth, playerHeight, playerXPos, playerYPos) 
     };
     return [topLeft, topRight, bottomLeft, bottomRight];
 }
+
+// player controls
+export const convertKeyToAction = key => {
+    // converts any directional enhancers to player action constants
+    switch(key) {
+        case (playerMovement.RUN_KEY):
+            return playerMovement.SPRINT;
+        case (playerMovement.JUMP_KEY):
+            return playerMovement.JUMP;
+        case (playerMovement.DOWN_KEY):
+            return playerMovement.CROUCH;
+        default:
+            return playerMovement.STAND;
+    }
+}
+export const isDirectionKey = (pressedKey) =>
+    [playerMovement.LEFT_KEY, playerMovement.RIGHT_KEY].includes(pressedKey);
+export const isDirectionalEnhancer = (pressedKey) =>
+    [playerMovement.DOWN_KEY, playerMovement.RUN_KEY, playerMovement.JUMP_KEY].includes(pressedKey);
 
 /*
 if (collisionCoordinates.length >= 1) {

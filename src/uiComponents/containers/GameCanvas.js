@@ -14,7 +14,11 @@ import {
     playerMovement,
     renderingData,
     isAtSprintingVelocity,
-    isAtWalkingVelocity
+    isAtWalkingVelocity,
+    isTouchingFloor,
+    convertKeyToAction,
+    isDirectionKey,
+    isDirectionalEnhancer
 } from "../../gameConfig";
 import { setPlayerMovementDirection, setPlayerMovementType } from "../../boilerplate/actions";
 
@@ -41,27 +45,20 @@ export default props => {
     const { width, height } = playerSize.find(playerSize => playerSize.id === size);
     const playerAnimationData = playerAnimation.find(animationData => animationData.playerId === size);
 
-    const isJumping = () => false; // todo: add calc to determine if player is on ground or object
-    const isDirectionKey = (pressedKey) =>
-        [playerMovement.LEFT_KEY, playerMovement.RIGHT_KEY].includes(pressedKey);
-    const isDirectionalEnhancer = (pressedKey) =>
-        [playerMovement.DOWN_KEY, playerMovement.RUN_KEY, playerMovement.JUMP_KEY].includes(pressedKey);
-    const convertKeyToAction = key => {
-        // converts any directional enhancers to player action constants
-        switch(key) {
-            case (playerMovement.RUN_KEY):
-                return playerMovement.SPRINT;
-            case (playerMovement.JUMP_KEY):
-                return playerMovement.JUMP;
-            case (playerMovement.DOWN_KEY):
-                return playerMovement.CROUCH;
-            default:
-                return playerMovement.STAND;
-        }
-    }
+    useEffect(() => {
+        console.log('movement direction updated: ' + movementDirection);
+    }, [movementDirection]);
 
     // event handler
     const handleMove = handleType => e => {
+        const {
+            position: {
+                movementType,
+                movementDirection,
+                horizontalVelocity,
+                verticalVelocity
+            }
+        } = playerData;
         /*
         - only one direction can be applied at one time
         - only one movement type can be applied at one time
@@ -74,25 +71,34 @@ export default props => {
         // determine how to handle the input
         const pressedKey = e.key.toUpperCase();
         if (isDirectionKey(pressedKey)) {
-            if (handleType === 'begin')
-                // set direction in state
+            // only if begin and pressed key is not the current one
+            if (handleType === 'begin' && pressedKey !== movementDirection) {
+                // set direction and initial movement
                 dispatch(setPlayerMovementDirection(pressedKey));
-            else if (movementDirection === pressedKey)
+                dispatch(setPlayerMovementType(playerMovement.WALK));
+            } else if (handleType === 'end' && movementDirection === pressedKey) {
                 // cancel movement direction (only if the current key in redux is the released key)
+                // cancel movement type as well
                 dispatch(setPlayerMovementDirection(null));
+                dispatch(setPlayerMovementType(playerMovement.STAND));
+            }
         } else if (isDirectionalEnhancer(pressedKey)) {
-            // convert to action
             const convertedAction = convertKeyToAction(pressedKey);
-            // check if pressed or released
-            if (handleType === 'begin') {
+            // only if begin and pressed key is not the current one
+            if (handleType === 'begin' && movementType !== convertedAction) {
                 // set movement action, or block movement if a jump is in progress
-                if (movementType !== playerMovement.JUMP)
+                if (movementType !== playerMovement.JUMP && movementDirection != null)
                     dispatch(setPlayerMovementType(convertedAction));
-            } else if (movementType === convertedAction) {
+                // only dispatch jump or crouch movement if player was already touching floor
+                else if ((convertedAction === playerMovement.JUMP && isTouchingFloor())
+                          || convertedAction === playerMovement.CROUCH)
+                    dispatch(setPlayerMovementType(convertedAction));
+            } else if (handleType === 'end' && movementType === convertedAction) {
+                // only if end and released key is one in redux
                 if (convertedAction === playerMovement.SPRINT && movementDirection !== null) {
                     // set to walk since directional is still applied and sprint key was released
                     dispatch(setPlayerMovementType(playerMovement.WALK));
-                } else if (convertedAction === playerMovement.JUMP && !isJumping()) {
+                } else if (convertedAction === playerMovement.JUMP && !isTouchingFloor()) {
                     // only set sprint/walk values if the jump has concluded
                     if (isAtWalkingVelocity(horizontalVelocity))
                         dispatch(setPlayerMovementType(playerMovement.WALK));
@@ -106,14 +112,14 @@ export default props => {
         }
     };
 
-    useEffect(() => {
+    /*useEffect(() => {
         // todo: handle jump ends, physics calculations, ect.
         const movementTimer = setInterval(() => {
             // check horizontal direction
 
         },);
         return () => clearInterval(movementTimer);
-    }, [movementType, movementDirection]);
+    }, [movementType, movementDirection]);*/
 
     // executes on mount
     useEffect(() => {
