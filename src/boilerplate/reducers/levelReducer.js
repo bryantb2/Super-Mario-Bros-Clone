@@ -26,7 +26,7 @@ export default (state = initialState, action) => {
             return newState;
         // reset level
         case actionTypes.RESET_LEVEL_WORLD:
-            return initialState;
+            return {...initialState};
         // set loading state
         case actionTypes.SET_LEVEL_LOAD:
             newState.loadingLevel = action.payload;
