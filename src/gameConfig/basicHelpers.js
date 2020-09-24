@@ -32,14 +32,19 @@ export const formatScore = (score) => {
 // retrieve array position of tile by pixel location
 export const findTilePositionByPixel = (xPos, yPos) => ({
   x: Math.floor(Math.floor(xPos) / baseUnitSize().WIDTH),
-  y: Math.floor(Math.floor(yPos) / baseUnitSize().HEIGHT),
+  y: Math.floor(Math.floor(yPos) / baseUnitSize().HEIGHT)
 })
 
 // retrieve x / y pixel positions via a column/row index
-export const findPixelPositionByTile = (columnIndex, rowIndex) => ({
-  x: (columnIndex + 1) * baseUnitSize().WIDTH, // right edge
-  y: (rowIndex + 1) * baseUnitSize().HEIGHT, // top edge (element 0 is actually top of screen, so index must be reversed for height)
-})
+export const findPixelPositionByTile = (columnIndex, rowIndex) => {
+  const { WIDTH, HEIGHT } = baseUnitSize()
+  // width is measure from LEFT edge
+  // height is measured from top edge
+  return ({
+    x: columnIndex * WIDTH,
+    y: rowIndex * HEIGHT
+  })
+}
 
 // calculate final velocity
 export const calculateFinalV = (
@@ -88,7 +93,7 @@ export const getCollisionCoordinates = (
   for (const modelVertex of boxModel) {
     const { x, y } = modelVertex
     // get grid tile by coordinates
-    const tileIndexes = findTilePositionByPixel(x, y)
+    const tileIndexes = findTilePositionByPixel(x + 1, y + 1)
     const gameTile = gameGrid[tileIndexes.x][tileIndexes.y]
     if (gameTile !== null && gameTile !== undefined)
       // add game tile coordinates to collision list
@@ -107,25 +112,25 @@ const buildPlayerBoxModel = (
     xLabel: 'LEFT',
     yLabel: 'TOP',
     x: playerXPos - playerWidth / 2,
-    y: playerYPos + playerHeight / 2,
+    y: playerYPos - playerHeight / 2,
   }
   const topRight = {
     xLabel: 'RIGHT',
     yLabel: 'TOP',
     x: playerXPos + playerWidth / 2,
-    y: playerYPos + playerHeight / 2,
+    y: playerYPos - playerHeight / 2,
   }
   const bottomLeft = {
     xLabel: 'LEFT',
     yLabel: 'BOTTOM',
     x: playerXPos - playerWidth / 2,
-    y: playerYPos - playerHeight / 2,
+    y: playerYPos + playerHeight / 2,
   }
   const bottomRight = {
     xLabel: 'RIGHT',
     yLabel: 'BOTTOM',
     x: playerXPos + playerWidth / 2,
-    y: playerYPos - playerHeight / 2,
+    y: playerYPos + playerHeight / 2,
   }
   return [topLeft, topRight, bottomLeft, bottomRight]
 }

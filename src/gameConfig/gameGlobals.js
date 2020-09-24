@@ -1,5 +1,5 @@
 export const gameGrid = {
-  RENDERABLE_HEIGHT: 15, // THIS ONLY INCLUDES THE NON-CONSTANT LEVEL BLOCKS, LIKE MYS. BOXES AND PIPES
+  RENDERABLE_HEIGHT: 15, // includes floor
   RENDERABLE_WIDTH: 16, // DO NOT PUT ANY RENDERABLE BLOCKS PAST THIS POINT
   INTERACTIVE_WIDTH: 38,
   INTERACTIVE_HEIGHT: 25,
@@ -9,7 +9,7 @@ export const gameGrid = {
 export const baseUnitSize = () => ({
   WIDTH: 70, // Math.floor(window.innerWidth / gameGrid.RENDERABLE_WIDTH),
   HEIGHT: Math.floor(window.innerHeight / gameGrid.RENDERABLE_HEIGHT), // '67',
-  UNITS: 'px',
+  UNITS: 'px'
 })
 
 export const animationTypes = {
@@ -43,16 +43,27 @@ export const physicsData = {
 
 export const playerSize = [
   {
-    id: 'SMALL_MARIO',
-    height: 2,
-    width: 1,
+    id: 'SUPER_MARIO',
+    height: 2.75,
+    width: 1.375
   },
   {
-    id: 'SUPER_MARIO',
-    height: 1,
-    width: 0.75,
+    id: 'SMALL_MARIO',
+    height: 1.5,
+    width: 1
+  }
+];
+
+export const floorHeight = [
+  {
+    size: playerSize[0].id,
+    floorHeight: baseUnitSize().HEIGHT * (gameGrid.RENDERABLE_HEIGHT - 4.15)
   },
-]
+  {
+    size: playerSize[1].id,
+    floorHeight: baseUnitSize().HEIGHT * (gameGrid.RENDERABLE_HEIGHT - 3.15)
+  },
+];
 
 export const playerMovement = {
   // actions

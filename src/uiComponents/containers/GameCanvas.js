@@ -69,6 +69,7 @@ export default (props) => {
   }, [movementType, movementDirection])
 
   const handleMove = (e, handleType) => {
+    console.log(playerMovement);
     /*
         - only one direction can be applied at one time
         - only one movement type can be applied at one time
@@ -109,19 +110,18 @@ export default (props) => {
           convertedAction === playerMovement.CROUCH
         )
           dispatch(setPlayerMovementType(convertedAction))
-      } else if (
+      } /*else if (
         handleType === 'end' &&
-        movementType === convertedAction &&
-        movementType !== playerMovement.JUMP
+        movementType === convertedAction
       ) {
-        // only if end and released key is one in redux
+        // only if released key is in redux
         if (
-          convertedAction === playerMovement.SPRINT &&
+          movementType === playerMovement.SPRINT &&
           movementDirection !== null
         )
           // set to walk since directional is still applied and sprint key was released
           dispatch(setPlayerMovementType(playerMovement.WALK))
-        else if (convertedAction === playerMovement.JUMP && !touchingFloor) {
+        else if (movementType === playerMovement.JUMP && touchingFloor) {
           // only set sprint/walk values if the jump has concluded
           if (isAtWalkingVelocity(horizontalVelocity))
             dispatch(setPlayerMovementType(playerMovement.WALK))
@@ -130,11 +130,11 @@ export default (props) => {
             movementDirection !== null
           )
             dispatch(setPlayerMovementType(playerMovement.SPRINT))
-        } else if (convertedAction === playerMovement.CROUCH) {
+        } else if (movementType === playerMovement.CROUCH) {
           // a player CANNOT move when crouching, so it defaults back to standing
           dispatch(setPlayerMovementType(playerMovement.STAND))
         }
-      }
+      }*/
     }
   }
 
@@ -152,6 +152,8 @@ export default (props) => {
       window.removeEventListener('keyup', endEvent)
     }
   }, [playerData, levelData])
+
+  console.log(baseUnitHeight);
 
   return (
     <CanvasBackground imageTranslation={0} image={background}>
@@ -171,12 +173,10 @@ export default (props) => {
                         <AnimatedMaterial
                           key={tile.instanceId}
                           x={
-                            pixelPosition.x -
-                            baseUnitWidth /* translate left since width is measured from right edge */
+                            pixelPosition.x
                           }
                           y={
-                            pixelPosition.y -
-                            baseUnitHeight /* translate up since height is measured from top edge */
+                            pixelPosition.y
                           }
                           width={baseUnitWidth}
                           height={baseUnitHeight}
