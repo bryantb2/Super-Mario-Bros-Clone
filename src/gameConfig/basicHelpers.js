@@ -108,29 +108,30 @@ const buildPlayerBoxModel = (
   playerYPos,
 ) => {
   // build box model coordinates of player
+  // note: origin point for player box is top left, so all calcs must be relative to that corner
   const topLeft = {
     xLabel: 'LEFT',
     yLabel: 'TOP',
-    x: playerXPos - playerWidth / 2,
-    y: playerYPos - playerHeight / 2,
+    x: playerXPos, //- playerWidth / 2,
+    y: playerYPos, //- playerHeight / 2,
   }
   const topRight = {
     xLabel: 'RIGHT',
     yLabel: 'TOP',
-    x: playerXPos + playerWidth / 2,
-    y: playerYPos - playerHeight / 2,
+    x: playerXPos + playerWidth, // / 2,
+    y: playerYPos //- playerHeight / 2,
   }
   const bottomLeft = {
     xLabel: 'LEFT',
     yLabel: 'BOTTOM',
-    x: playerXPos - playerWidth / 2,
-    y: playerYPos + playerHeight / 2,
+    x: playerXPos, //- playerWidth / 2,
+    y: playerYPos + playerHeight // / 2,
   }
   const bottomRight = {
     xLabel: 'RIGHT',
     yLabel: 'BOTTOM',
-    x: playerXPos + playerWidth / 2,
-    y: playerYPos + playerHeight / 2,
+    x: playerXPos + playerWidth, // / 2,
+    y: playerYPos + playerHeight // / 2,
   }
   return [topLeft, topRight, bottomLeft, bottomRight]
 }

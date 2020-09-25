@@ -36,7 +36,6 @@ export const GameImage = (props) => {
   }
 
   // generate canvas element
-  //return <Image x={x} y={y} width={width} height={height} image={img} />
   return (
     <Rect
         x={x}
