@@ -45,11 +45,11 @@ export const playerSize = [
   {
     id: 'SUPER_MARIO',
     height: 2.75,
-    width: 1.375
+    width: 1.15
   },
   {
     id: 'SMALL_MARIO',
-    height: 1.5,
+    height: 1.9,
     width: 1
   }
 ];
@@ -57,7 +57,7 @@ export const playerSize = [
 export const floorHeight = [
   {
     size: playerSize[0].id,
-    floorHeight: baseUnitSize().HEIGHT * (gameGrid.RENDERABLE_HEIGHT - 4.15)
+    floorHeight: baseUnitSize().HEIGHT * (gameGrid.RENDERABLE_HEIGHT - 3.65)
   },
   {
     size: playerSize[1].id,

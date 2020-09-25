@@ -25,6 +25,8 @@ import {
   setPlayerMovementType,
 } from '../../boilerplate/actions'
 
+import { GameText } from "../elements";
+
 export default (props) => {
   const dispatch = useDispatch()
   const levelData = useSelector((state) => state.loadedLevel)
@@ -193,9 +195,14 @@ export default (props) => {
           height={playerHeight}
           x={playerXPos}
           y={playerYPos}
-          playerMovement={playerData.position.movementType}
+          playerMovement={movementType}
           animationData={playerAnimationData}
+          translateX={playerWidth}
+          translateY={150}
+          coverImage={true}
         />
+        <GameText x={0} y={793} text={'Small Player'}/>
+        <GameText x={0} y={760} text={'Large Player'}/>
       </Layer>
     </CanvasBackground>
   )
