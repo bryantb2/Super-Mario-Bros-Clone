@@ -13,7 +13,9 @@ const initialState = {
   size: initialSize,
   position: {
     x: 0,
-    y: floorHeight.find((height) => height.size === initialSize).floorHeight,
+    y: Math.floor(
+      floorHeight.find((height) => height.size === initialSize).floorHeight,
+    ),
     movementType: playerMovement.STAND,
     movementDirection: null,
     horizontalVelocity: 0,

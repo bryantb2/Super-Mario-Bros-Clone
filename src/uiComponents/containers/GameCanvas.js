@@ -25,8 +25,11 @@ import {
   calcVelocityByDisplacement,
 } from '../../gameConfig'
 import {
+  setPlayerHorizontalVelocity,
   setPlayerMovementDirection,
   setPlayerMovementType,
+  setPlayerPosition,
+  setPlayerVerticalVelocity,
 } from '../../boilerplate/actions'
 
 import { GameText } from '../elements'
@@ -71,13 +74,7 @@ export default (props) => {
   const currentCollisions =
     gameMap === null
       ? []
-      : getCollisionCoordinates(
-          playerWidth,
-          playerHeight,
-          playerXPos,
-          playerYPos,
-          gameMap,
-        )
+      : getCollisionCoordinates(playerWidth, playerHeight, x, y, gameMap)
 
   const handleMove = (e, handleType) => {
     /*
@@ -168,86 +165,111 @@ export default (props) => {
     // todo: handle jump ends, physics calculations, ect.
     // check game logic, set velocity, end jumps, ect.
     const gameLoop = setInterval(() => {
+      console.log('game loop fired')
       // check for lethal collisions
-      if (!isAnyCollisionLethal(currentCollisions)) {
-        // calculate collision coordinates
-        const touchingFloor = isTouchingFloor(currentCollisions)
-        const horizontalCollisions = currentCollisions.filter(
-          (collision) =>
-            collision.yLabel === 'RIGHT' || collision.yLabel === 'LEFT',
-        )
-        const verticalCollisions = currentCollisions.filter(
-          (collision) => collision.yLabel === 'TOP',
-        )
-
-        // cancel jump if touching floor
-        if (movementType === JUMP && touchingFloor) {
-          // only set sprint/walk values if the jump has concluded
-          if (isAtWalkingVelocity(horizontalVelocity))
-            dispatch(setPlayerMovementType(WALK))
-          else if (
-            isAtSprintingVelocity(horizontalVelocity) &&
-            movementDirection !== null
+      if (!isAnyCollisionLethal(currentCollisions, gameMap)) {
+        // check for directional movement or velocity
+        if (
+          (movementDirection !== null && movementType !== STAND) ||
+          prevPosition.y != y ||
+          prevPosition.x != x
+        ) {
+          // calculate collision coordinates
+          const touchingFloor = isTouchingFloor(currentCollisions)
+          const horizontalCollisions = currentCollisions.filter(
+            (collision) =>
+              collision.yLabel === 'RIGHT' || collision.yLabel === 'LEFT',
           )
-            dispatch(setPlayerMovementType(SPRINT))
-        }
+          const verticalCollisions = currentCollisions.filter(
+            (collision) => collision.yLabel === 'TOP',
+          )
 
-        let maxXVelocity, maxYVelocity
-        // set horizontal max
-        if (movementType === SPRINT)
-          maxXVelocity = physicsData.MAX_SPRINT_VELOCITY
-        if (movementType === WALK)
-          maxXVelocity = physicsData.MAX_WALK_VELOCITY
-        else
-          maxXVelocity = 0
-        // set vertical max
-        if (movementType === JUMP && prevPosition.verticalVelocity <= 0 && !touchingFloor)
-          maxYVelocity = physicsData.MAX_GRAVITY_VELOCITY
-        else if (movementType === JUMP && prevPosition.verticalVelocity > 0)
-          maxYVelocity = physicsData.MAX_JUMP_VELOCITY
-        else
-          maxYVelocity = 0
+          // cancel jump if touching floor
+          if (movementType === JUMP && touchingFloor) {
+            // only set sprint/walk values if the jump has concluded
+            if (isAtWalkingVelocity(horizontalVelocity))
+              dispatch(setPlayerMovementType(WALK))
+            else if (
+              isAtSprintingVelocity(horizontalVelocity) &&
+              movementDirection !== null
+            )
+              dispatch(setPlayerMovementType(SPRINT))
+          }
 
-        // check for velocity-impeding collisions
-        let newY = y,
+          let maxXVelocity, maxYVelocity
+          // set horizontal max
+          if (movementType === SPRINT)
+            maxXVelocity = physicsData.MAX_SPRINT_VELOCITY
+          if (movementType === WALK)
+            maxXVelocity = physicsData.MAX_WALK_VELOCITY
+          else maxXVelocity = 0
+          // set vertical max
+          if (
+            movementType === JUMP &&
+            prevPosition.verticalVelocity <= 0 &&
+            !touchingFloor
+          )
+            maxYVelocity = physicsData.MAX_GRAVITY_VELOCITY
+          else if (movementType === JUMP && prevPosition.verticalVelocity > 0)
+            maxYVelocity = physicsData.MAX_JUMP_VELOCITY
+          else maxYVelocity = 0
+
+          // check for velocity-impeding collisions
+          let newY = y,
             newX = x,
             newXVelocity = horizontalVelocity,
             newYVelocity = verticalVelocity,
             newMoveType = movementType
-        if (verticalCollisions.length >= 1 && !touchingFloor) {
-          // stop player vertical velocity
-          newYVelocity = 0
-        } else if (horizontalCollisions.length >= 1) {
-          // stop player horizontal velocity
-          newXVelocity = 0
-        } else {
-          // determine proper acceleration values
-          let xAccel, yAccel
-          if (movementType === JUMP) {
-            // set vertical accel value
-            if (prevPosition.y < y && prevPosition.verticalVelocity !== 0)
-              yAccel = physicsData.JUMP_ACCEL
-            else yAccel = physicsData.GRAVITY_ACCEL
-          } else if (movementType === SPRINT)
-            xAccel = physicsData.HORIZONTAL_SPRINT_ACCEL
-          else if (movementType === WALK)
-            xAccel = physicsData.HORIZONTAL_WALK_ACCEL
-          else {
-            xAccel = 0
-            yAccel = 0
+          if (verticalCollisions.length >= 1 && !touchingFloor) {
+            // stop player vertical velocity
+            newYVelocity = 0
+          } else if (horizontalCollisions.length >= 1) {
+            // stop player horizontal velocity
+            newXVelocity = 0
+          } else {
+            // determine proper acceleration values
+            let xAccel, yAccel
+            if (movementType === JUMP) {
+              // set vertical accel value
+              if (prevPosition.y < y && prevPosition.verticalVelocity !== 0)
+                yAccel = physicsData.JUMP_ACCEL
+              else yAccel = physicsData.GRAVITY_ACCEL
+            } else if (movementType === SPRINT)
+              xAccel = physicsData.HORIZONTAL_SPRINT_ACCEL
+            else if (movementType === WALK)
+              xAccel = physicsData.HORIZONTAL_WALK_ACCEL
+            else {
+              xAccel = 0
+              yAccel = 0
+            }
+
+            // calculate next vertical and horizontal velocity
+            newXVelocity = calcVelocityByDisplacement(
+              horizontalVelocity,
+              xAccel,
+              x - prevPosition.x,
+            )
+            newYVelocity = calcVelocityByDisplacement(
+              verticalVelocity,
+              yAccel,
+              y - prevPosition.y,
+            )
+            // limit velocities based on calculated maxes
+            newXVelocity =
+              newXVelocity > maxXVelocity ? maxXVelocity : newXVelocity
+            newYVelocity =
+              newYVelocity > maxYVelocity ? maxYVelocity : newYVelocity
           }
 
-          // calculate next vertical and horizontal velocity
-          newXVelocity = calcVelocityByDisplacement(horizontalVelocity, xAccel, x - prevPosition.x)
-          newYVelocity = calcVelocityByDisplacement(verticalVelocity, yAccel, y - prevPosition.y)
-          // limit velocities based on calculated maxes
-          newXVelocity = newXVelocity > maxXVelocity ? maxXVelocity : newXVelocity
-          newYVelocity = newYVelocity > maxYVelocity ? maxYVelocity : newYVelocity
-        }
+          // calc new x,y coordinates
+          newX += newXVelocity
+          newY += newYVelocity
 
-        // set new values to redux store
-        newY += newYVelocity
-        newX += newXVelocity
+          // set new values to redux store
+          setPlayerPosition(newX, newY)
+          setPlayerVerticalVelocity(newYVelocity)
+          setPlayerHorizontalVelocity(newXVelocity)
+        }
       } else {
         // mark game over
         // todo
@@ -261,7 +283,7 @@ export default (props) => {
     return () => {
       clearInterval(gameLoop)
     }
-  }, [playerData.position])
+  }, [playerData, levelData])
 
   return (
     <CanvasBackground imageTranslation={0} image={background}>

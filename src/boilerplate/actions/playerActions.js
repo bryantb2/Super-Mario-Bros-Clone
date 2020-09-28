@@ -1,7 +1,7 @@
 import actionTypes from '../actionTypes'
 
 // position actions
-export const setPlayerPosition = (xPos, yPos, movementType) => (dispatch) =>
+export const setPlayerPosition = (xPos, yPos) => (dispatch) =>
   dispatch({
     type: actionTypes.SET_PLAYER_POSITION,
     payload: { x: xPos, y: yPos },
