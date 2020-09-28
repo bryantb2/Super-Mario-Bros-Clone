@@ -31,8 +31,8 @@ export const formatScore = (score) => {
 
 // retrieve array position of tile by pixel location
 export const findTilePositionByPixel = (xPos, yPos) => ({
-  x: Math.floor(Math.floor(xPos) / baseUnitSize().WIDTH),
-  y: Math.floor(Math.floor(yPos) / baseUnitSize().HEIGHT),
+  x: Math.floor(Math.floor(xPos < 0 ? 0 : xPos) / baseUnitSize().WIDTH),
+  y: Math.floor(Math.floor(yPos < 0 ? 0 : yPos) / baseUnitSize().HEIGHT),
 })
 
 // retrieve x / y pixel positions via a column/row index
@@ -70,7 +70,7 @@ export const isAtSprintingVelocity = (horizontalVelocity) =>
 export const isTouchingFloor = (collisionCoordinates) => {
   // filter collisions for floor value
   const floorCollisions = collisionCoordinates.filter(
-    (coord) => coord.yLabel === 'BOTTOM',
+    collision => collision.position === 'BOTTOM',
   )
   // check that player is touching at least one solid object
   return floorCollisions.length >= 1
@@ -88,9 +88,20 @@ export const getCollisionCoordinates = (
   const foundCollisions = []
   // loop through box model coordinates
   for (const modelVertex of boxModel) {
-    const { x, y } = modelVertex
+    const { x, y, position } = modelVertex
+    // determine which direction pixels need to be added
+    let horizontalOffset = 0, verticalOffset = 0
+    if (position === 'TOP') {
+      verticalOffset = 1
+    } else if (position === 'RIGHT') {
+      horizontalOffset = 1
+    } else if (position === 'BOTTOM') {
+      verticalOffset = -1
+    } else {
+      horizontalOffset = -1
+    }
     // get grid tile by coordinates
-    const tileIndexes = findTilePositionByPixel(x + 1, y + 1)
+    const tileIndexes = findTilePositionByPixel(x + horizontalOffset, y + verticalOffset)
     const gameTile = gameGrid[tileIndexes.x][tileIndexes.y]
     if (gameTile !== null && gameTile !== undefined)
       // add game tile coordinates to collision list
@@ -116,31 +127,27 @@ const buildPlayerBoxModel = (
 ) => {
   // build box model coordinates of player
   // note: origin point for player box is top left, so all calcs must be relative to that corner
-  const topLeft = {
-    xLabel: 'LEFT',
-    yLabel: 'TOP',
-    x: playerXPos, //- playerWidth / 2,
-    y: playerYPos, //- playerHeight / 2,
+  const top = {
+    position: 'TOP',
+    x: playerXPos + (playerWidth / 2),
+    y: playerYPos,
   }
-  const topRight = {
-    xLabel: 'RIGHT',
-    yLabel: 'TOP',
-    x: playerXPos + playerWidth, // / 2,
-    y: playerYPos, //- playerHeight / 2,
+  const right = {
+    position: 'RIGHT',
+    x: playerXPos + playerWidth,
+    y: playerYPos + (playerHeight / 2),
   }
-  const bottomLeft = {
-    xLabel: 'LEFT',
-    yLabel: 'BOTTOM',
-    x: playerXPos, //- playerWidth / 2,
-    y: playerYPos + playerHeight, // / 2,
+  const bottom = {
+    position: 'BOTTOM',
+    x: playerXPos + (playerWidth / 2),
+    y: playerYPos + playerHeight,
   }
-  const bottomRight = {
-    xLabel: 'RIGHT',
-    yLabel: 'BOTTOM',
-    x: playerXPos + playerWidth, // / 2,
-    y: playerYPos + playerHeight, // / 2,
+  const left = {
+    position: 'LEFT',
+    x: playerXPos,
+    y: playerYPos + (playerHeight / 2),
   }
-  return [topLeft, topRight, bottomLeft, bottomRight]
+  return [top, right, bottom, left]
 }
 
 const mapCollisionsToTiles = (collisionArr, gameGrid) =>

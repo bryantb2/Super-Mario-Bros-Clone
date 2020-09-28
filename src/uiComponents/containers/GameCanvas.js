@@ -177,11 +177,11 @@ export default (props) => {
           // calculate collision coordinates
           const touchingFloor = isTouchingFloor(currentCollisions)
           const horizontalCollisions = currentCollisions.filter(
-            (collision) =>
-              collision.yLabel === 'RIGHT' || collision.yLabel === 'LEFT',
+            collision =>
+              collision.position === 'RIGHT' || collision.position === 'LEFT',
           )
           const verticalCollisions = currentCollisions.filter(
-            (collision) => collision.yLabel === 'TOP',
+            collision => collision.position === 'TOP',
           )
 
           // cancel jump if touching floor
