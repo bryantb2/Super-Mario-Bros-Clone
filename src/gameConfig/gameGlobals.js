@@ -36,7 +36,8 @@ export const physicsData = {
   MAX_JUMP_VELOCITY: 3,
   MAX_GRAVITY_VELOCITY: 4,
   // acceleration values
-  HORIZONTAL_ACCEL: 2,
+  HORIZONTAL_SPRINT_ACCEL: 3.5,
+  HORIZONTAL_WALK_ACCEL: 2,
   JUMP_ACCEL: 1.5,
   GRAVITY_ACCEL: -2.5,
 }

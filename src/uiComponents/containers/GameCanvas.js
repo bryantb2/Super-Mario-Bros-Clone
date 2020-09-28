@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Layer } from 'react-konva'
 import { useSelector, useDispatch } from 'react-redux'
 import {
@@ -19,7 +19,10 @@ import {
   convertKeyToAction,
   isDirectionKey,
   isDirectionalEnhancer,
-  getCollisionCoordinates
+  getCollisionCoordinates,
+  isAnyCollisionLethal,
+  physicsData,
+  calcVelocityByDisplacement,
 } from '../../gameConfig'
 import {
   setPlayerMovementDirection,
@@ -32,6 +35,9 @@ export default (props) => {
   const dispatch = useDispatch()
   const levelData = useSelector((state) => state.loadedLevel)
   const playerData = useSelector((state) => state.player)
+
+  // create ref to create prevProps-like behavior
+  const prevPositionRef = useRef(playerData.position)
 
   // breakdown state
   const {
@@ -51,6 +57,7 @@ export default (props) => {
   const { gameMap, background } = levelData
 
   // player height/width, position, and animation values
+  const { JUMP, WALK, STAND, CROUCH, SPRINT } = playerMovement
   const { WIDTH: baseUnitWidth, HEIGHT: baseUnitHeight } = baseUnitSize()
   const playerAnimationData =
     playerAnimation.find((animationData) => animationData.playerId === size) ||
@@ -59,27 +66,20 @@ export default (props) => {
     playerSize.find((sizeData) => sizeData.id === size) || playerSize[0]
   const playerWidth = playerDimensions.width * baseUnitWidth
   const playerHeight = playerDimensions.height * baseUnitHeight
-  const playerXPos = x + horizontalVelocity
-  const playerYPos = y + verticalVelocity
-  const currentCollisions = getCollisionCoordinates(
-      playerWidth,
-      playerHeight,
-      playerXPos,
-      playerYPos,
-      gameMap
-  );
-
-  /*useEffect(() => {
-    // todo: handle jump ends, physics calculations, ect.
-    const movementTimer = setInterval(() => {
-      // check if collision is occurring
-      // if ()
-    }, renderingData.frameTimeMS)
-    return () => clearInterval(movementTimer)
-  }, [movementType, movementDirection])*/
+  //const playerXPos = x + horizontalVelocity
+  //const playerYPos = y + verticalVelocity
+  const currentCollisions =
+    gameMap === null
+      ? []
+      : getCollisionCoordinates(
+          playerWidth,
+          playerHeight,
+          playerXPos,
+          playerYPos,
+          gameMap,
+        )
 
   const handleMove = (e, handleType) => {
-    console.log(playerMovement)
     /*
       - Directionals
         - only one direction can be applied at one time
@@ -95,54 +95,52 @@ export default (props) => {
         - jumps cannot be interrupted by other movement types unless:
           - player is touching floor
         */
+    const inputStart = 'begin'
+    const inputEnd = 'end'
     const pressedKey = e.key.toUpperCase()
     if (isDirectionKey(pressedKey)) {
       // set direction and movement if "begin" event AND pressed direction is not already in state
-      if (handleType === 'begin' && movementDirection !== pressedKey) {
+      if (handleType === inputStart && movementDirection !== pressedKey) {
         // set direction and initial movement
         dispatch(setPlayerMovementDirection(pressedKey))
-        dispatch(setPlayerMovementType(playerMovement.WALK))
-      } else if (handleType === 'end' && movementDirection === pressedKey) {
+        if (movementType !== JUMP) dispatch(setPlayerMovementType(WALK))
+      } else if (handleType === inputEnd && movementDirection === pressedKey) {
         // cancel directional
         dispatch(setPlayerMovementDirection(null))
-        dispatch(setPlayerMovementType(playerMovement.STAND))
+        if (movementType !== JUMP) dispatch(setPlayerMovementType(STAND))
       }
     } else if (isDirectionalEnhancer(pressedKey)) {
       const keyEventAction = convertKeyToAction(pressedKey)
       const touchingFloor = isTouchingFloor(currentCollisions)
-      if (handleType === 'begin' && movementType !== keyEventAction) {
+      if (handleType === inputStart && movementType !== keyEventAction) {
         // set movement action, or block movement if a jump is in progress
-        if (movementType !== playerMovement.JUMP && movementDirection != null)
+        if (movementType !== JUMP && movementDirection != null)
           dispatch(setPlayerMovementType(keyEventAction))
         // only dispatch jump or crouch movement if player was already touching floor
         else if (
-          (keyEventAction === playerMovement.JUMP && touchingFloor) ||
-          keyEventAction === playerMovement.CROUCH
+          (keyEventAction === JUMP || keyEventAction === CROUCH) &&
+          touchingFloor
         )
           dispatch(setPlayerMovementType(keyEventAction))
-      } else if (
-        handleType === 'end' &&
-        movementType === keyEventAction
-      ) {
+      } else if (handleType === inputEnd && movementType === keyEventAction) {
         // only if released key is in redux
-        if (
-          movementType === playerMovement.SPRINT &&
-          movementDirection !== null
-        )
+        if (movementType === SPRINT && movementDirection !== null)
           // set to walk since directional is still applied and sprint key was released
-          dispatch(setPlayerMovementType(playerMovement.WALK))
-        else if (movementType === playerMovement.JUMP && touchingFloor) {
+          dispatch(setPlayerMovementType(WALK))
+        /*else if (movementType === JUMP && touchingFloor) {
           // only set sprint/walk values if the jump has concluded
           if (isAtWalkingVelocity(horizontalVelocity))
-            dispatch(setPlayerMovementType(playerMovement.WALK))
+            dispatch(setPlayerMovementType(WALK))
           else if (
             isAtSprintingVelocity(horizontalVelocity) &&
             movementDirection !== null
           )
-            dispatch(setPlayerMovementType(playerMovement.SPRINT))
-        } else if (movementType === playerMovement.CROUCH) {
+            dispatch(setPlayerMovementType(SPRINT))
+        }*/ else if (
+          movementType === CROUCH
+        ) {
           // a player CANNOT move when crouching, so it defaults back to standing
-          dispatch(setPlayerMovementType(playerMovement.STAND))
+          dispatch(setPlayerMovementType(STAND))
         }
       }
     }
@@ -163,7 +161,107 @@ export default (props) => {
     }
   }, [playerData, levelData])
 
-  console.log(baseUnitHeight)
+  // executes after movement inputs change
+  useEffect(() => {
+    const prevPosition = { ...prevPositionRef.current }
+    const currentPosition = { ...playerData.position }
+    // todo: handle jump ends, physics calculations, ect.
+    // check game logic, set velocity, end jumps, ect.
+    const gameLoop = setInterval(() => {
+      // check for lethal collisions
+      if (!isAnyCollisionLethal(currentCollisions)) {
+        // calculate collision coordinates
+        const touchingFloor = isTouchingFloor(currentCollisions)
+        const horizontalCollisions = currentCollisions.filter(
+          (collision) =>
+            collision.yLabel === 'RIGHT' || collision.yLabel === 'LEFT',
+        )
+        const verticalCollisions = currentCollisions.filter(
+          (collision) => collision.yLabel === 'TOP',
+        )
+
+        // cancel jump if touching floor
+        if (movementType === JUMP && touchingFloor) {
+          // only set sprint/walk values if the jump has concluded
+          if (isAtWalkingVelocity(horizontalVelocity))
+            dispatch(setPlayerMovementType(WALK))
+          else if (
+            isAtSprintingVelocity(horizontalVelocity) &&
+            movementDirection !== null
+          )
+            dispatch(setPlayerMovementType(SPRINT))
+        }
+
+        let maxXVelocity, maxYVelocity
+        // set horizontal max
+        if (movementType === SPRINT)
+          maxXVelocity = physicsData.MAX_SPRINT_VELOCITY
+        if (movementType === WALK)
+          maxXVelocity = physicsData.MAX_WALK_VELOCITY
+        else
+          maxXVelocity = 0
+        // set vertical max
+        if (movementType === JUMP && prevPosition.verticalVelocity <= 0 && !touchingFloor)
+          maxYVelocity = physicsData.MAX_GRAVITY_VELOCITY
+        else if (movementType === JUMP && prevPosition.verticalVelocity > 0)
+          maxYVelocity = physicsData.MAX_JUMP_VELOCITY
+        else
+          maxYVelocity = 0
+
+        // check for velocity-impeding collisions
+        let newY = y,
+            newX = x,
+            newXVelocity = horizontalVelocity,
+            newYVelocity = verticalVelocity,
+            newMoveType = movementType
+        if (verticalCollisions.length >= 1 && !touchingFloor) {
+          // stop player vertical velocity
+          newYVelocity = 0
+        } else if (horizontalCollisions.length >= 1) {
+          // stop player horizontal velocity
+          newXVelocity = 0
+        } else {
+          // determine proper acceleration values
+          let xAccel, yAccel
+          if (movementType === JUMP) {
+            // set vertical accel value
+            if (prevPosition.y < y && prevPosition.verticalVelocity !== 0)
+              yAccel = physicsData.JUMP_ACCEL
+            else yAccel = physicsData.GRAVITY_ACCEL
+          } else if (movementType === SPRINT)
+            xAccel = physicsData.HORIZONTAL_SPRINT_ACCEL
+          else if (movementType === WALK)
+            xAccel = physicsData.HORIZONTAL_WALK_ACCEL
+          else {
+            xAccel = 0
+            yAccel = 0
+          }
+
+          // calculate next vertical and horizontal velocity
+          newXVelocity = calcVelocityByDisplacement(horizontalVelocity, xAccel, x - prevPosition.x)
+          newYVelocity = calcVelocityByDisplacement(verticalVelocity, yAccel, y - prevPosition.y)
+          // limit velocities based on calculated maxes
+          newXVelocity = newXVelocity > maxXVelocity ? maxXVelocity : newXVelocity
+          newYVelocity = newYVelocity > maxYVelocity ? maxYVelocity : newYVelocity
+        }
+
+        // set new values to redux store
+        newY += newYVelocity
+        newX += newXVelocity
+      } else {
+        // mark game over
+        // todo
+      }
+
+      // set current position values to ref
+      prevPositionRef.current = currentPosition
+    }, renderingData.frameTimeMS)
+
+    // cleanup effect
+    return () => {
+      clearInterval(gameLoop)
+    }
+  }, [playerData.position])
 
   return (
     <CanvasBackground imageTranslation={0} image={background}>
@@ -197,8 +295,8 @@ export default (props) => {
         <AnimatedPlayer
           width={playerWidth}
           height={playerHeight}
-          x={playerXPos}
-          y={playerYPos}
+          x={x}
+          y={y}
           playerMovement={movementType}
           animationData={playerAnimationData}
           translateX={playerWidth}

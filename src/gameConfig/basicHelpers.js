@@ -47,11 +47,17 @@ export const findPixelPositionByTile = (columnIndex, rowIndex) => {
 }
 
 // calculate final velocity
-export const calculateFinalV = (
+export const calcVelocityByTime = (
   velocityInitial,
   secondsSinceStart,
   acceleration,
 ) => velocityInitial + secondsSinceStart * acceleration
+
+export const calcVelocityByDisplacement = (
+  velocityInitial,
+  acceleration,
+  displacement,
+) => Math.sqrt(Math.pow(velocityInitial, 2) + 2 * acceleration * displacement)
 
 // velocity checkers
 export const isAtWalkingVelocity = (horizontalVelocity) =>
@@ -61,12 +67,11 @@ export const isAtSprintingVelocity = (horizontalVelocity) =>
   horizontalVelocity <= physicsData.MAX_SPRINT_VELOCITY
 
 // collision checker
-export const isTouchingFloor = (
-  collisionCoordinates
-) => {
+export const isTouchingFloor = (collisionCoordinates) => {
   // filter collisions for floor value
-  const floorCollisions = collisionCoordinates
-      .filter(coord => coord.yLabel === 'BOTTOM')
+  const floorCollisions = collisionCoordinates.filter(
+    (coord) => coord.yLabel === 'BOTTOM',
+  )
   // check that player is touching at least one solid object
   return floorCollisions.length >= 1
 }
