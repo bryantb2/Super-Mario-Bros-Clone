@@ -86,7 +86,7 @@ export const AnimatedPlayer = (props) => {
     playerMovement,
     translateX,
     translateY,
-    coverImage
+    coverImage,
   } = props
   // build initial image and image state
   const [animationFrame, setNextFrame] = useState(restingSprite)
@@ -130,14 +130,14 @@ export const AnimatedPlayer = (props) => {
 
   return (
     <GameImage
-        coverImage={coverImage}
-        x={x}
-        y={y}
-        width={width}
-        height={height}
-        src={animationFrame}
-        translateX={translateX}
-        translateY={translateY}
+      coverImage={coverImage}
+      x={x}
+      y={y}
+      width={width}
+      height={height}
+      src={animationFrame}
+      translateX={translateX}
+      translateY={translateY}
     />
   )
 }

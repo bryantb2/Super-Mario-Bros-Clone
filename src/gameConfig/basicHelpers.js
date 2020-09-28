@@ -32,7 +32,7 @@ export const formatScore = (score) => {
 // retrieve array position of tile by pixel location
 export const findTilePositionByPixel = (xPos, yPos) => ({
   x: Math.floor(Math.floor(xPos) / baseUnitSize().WIDTH),
-  y: Math.floor(Math.floor(yPos) / baseUnitSize().HEIGHT)
+  y: Math.floor(Math.floor(yPos) / baseUnitSize().HEIGHT),
 })
 
 // retrieve x / y pixel positions via a column/row index
@@ -40,10 +40,10 @@ export const findPixelPositionByTile = (columnIndex, rowIndex) => {
   const { WIDTH, HEIGHT } = baseUnitSize()
   // width is measure from LEFT edge
   // height is measured from top edge
-  return ({
+  return {
     x: columnIndex * WIDTH,
-    y: rowIndex * HEIGHT
-  })
+    y: rowIndex * HEIGHT,
+  }
 }
 
 // calculate final velocity
@@ -62,23 +62,15 @@ export const isAtSprintingVelocity = (horizontalVelocity) =>
 
 // collision checker
 export const isTouchingFloor = (
-  playerWidth,
-  playerHeight,
-  playerXPos,
-  playerYPos,
-  gameGrid,
+  collisionCoordinates
 ) => {
-  // get collision coordinates for player
-  const collisionCoordinates = getCollisionCoordinates(
-    playerWidth,
-    playerHeight,
-    playerXPos,
-    playerYPos,
-    gameGrid,
-  ).filter((collisionCoord) => collisionCoord.yLabel === 'BOTTOM')
+  // filter collisions for floor value
+  const floorCollisions = collisionCoordinates
+      .filter(coord => coord.yLabel === 'BOTTOM')
   // check that player is touching at least one solid object
-  return collisionCoordinates.length >= 1
+  return floorCollisions.length >= 1
 }
+
 export const getCollisionCoordinates = (
   objectWidth,
   objectHeight,
@@ -97,10 +89,20 @@ export const getCollisionCoordinates = (
     const gameTile = gameGrid[tileIndexes.x][tileIndexes.y]
     if (gameTile !== null && gameTile !== undefined)
       // add game tile coordinates to collision list
-      foundCollisions.push(modelVertex)
+      foundCollisions.push({
+        ...modelVertex,
+        x: x + 1, // add one to both x and y because that's how the collision was detected
+        y: y + 1,
+      })
   }
   return foundCollisions
 }
+
+export const isAnyCollisionLethal = (collisionArr, gameGrid) =>
+  mapCollisionsToTiles(collisionArr, gameGrid).find(
+    (gameTile) => gameTile.isLethal,
+  ) !== undefined
+
 const buildPlayerBoxModel = (
   playerWidth,
   playerHeight,
@@ -119,22 +121,30 @@ const buildPlayerBoxModel = (
     xLabel: 'RIGHT',
     yLabel: 'TOP',
     x: playerXPos + playerWidth, // / 2,
-    y: playerYPos //- playerHeight / 2,
+    y: playerYPos, //- playerHeight / 2,
   }
   const bottomLeft = {
     xLabel: 'LEFT',
     yLabel: 'BOTTOM',
     x: playerXPos, //- playerWidth / 2,
-    y: playerYPos + playerHeight // / 2,
+    y: playerYPos + playerHeight, // / 2,
   }
   const bottomRight = {
     xLabel: 'RIGHT',
     yLabel: 'BOTTOM',
     x: playerXPos + playerWidth, // / 2,
-    y: playerYPos + playerHeight // / 2,
+    y: playerYPos + playerHeight, // / 2,
   }
   return [topLeft, topRight, bottomLeft, bottomRight]
 }
+
+const mapCollisionsToTiles = (collisionArr, gameGrid) =>
+  collisionArr.map((collision) => {
+    const { x, y } = collision
+    // get grid tile by coordinates
+    const tileIndexes = findTilePositionByPixel(x, y)
+    return gameGrid[tileIndexes.x][tileIndexes.y]
+  })
 
 // player controls
 export const convertKeyToAction = (key) => {
@@ -158,22 +168,3 @@ export const isDirectionalEnhancer = (pressedKey) =>
     playerMovement.RUN_KEY,
     playerMovement.JUMP_KEY,
   ].includes(pressedKey)
-
-/*
-if (collisionCoordinates.length >= 1) {
-        // map coordinates to game grid objects
-        const gridCollisionObjects = collisionCoordinates.map(coordinates => {
-            // get tile indexes
-            const tileIndexes = findTilePositionByPixel(coordinates.x, coordinates.y);
-            return gameGrid[tileIndexes.x][tileIndexes.y];
-        });
-        let anyLethalCollision = false;
-        gridCollisionObjects.forEach(collisionObject => {
-            // ensure all of the "floor" collisions are safe
-            if (collisionObject.isLethal)
-                anyLethalCollision = true;
-        });
-        return anyLethalCollision;
-    }
-    return false;
- */

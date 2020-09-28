@@ -10,23 +10,14 @@ export const CanvasPageContainer = Styled.div`
 
 export const GameImage = (props) => {
   // build out dom image
-  const {
-    x,
-    y,
-    src,
-    width,
-    height,
-    translateX,
-    translateY,
-    coverImage
-  } = props
+  const { x, y, src, width, height, translateX, translateY, coverImage } = props
 
   // build image
   const img = document.createElement('img')
   img.src = src
 
   // check and set cover scale
-  let imageScale = {height: 0, width:0};
+  let imageScale = { height: 0, width: 0 }
   if (coverImage) {
     // calculate target scaling value
     const targetWidth = width / img.width
@@ -38,16 +29,20 @@ export const GameImage = (props) => {
   // generate canvas element
   return (
     <Rect
-        x={x}
-        y={y}
-        width={width}
-        height={height}
-        fillPatternImage={img}
-        fillPatternRepeat={'no-repeat'}
-        fillPatternScaleX={coverImage === true ? imageScale : width / img.width}
-        fillPatternScaleY={coverImage === true ? imageScale : height / img.height}
-        fillPatternOffsetX={(translateX !== null && translateX !== undefined) ? translateX : 0}
-        fillPatternOffsetY={(translateY !== null && translateY !== undefined) ? translateY : 0}
+      x={x}
+      y={y}
+      width={width}
+      height={height}
+      fillPatternImage={img}
+      fillPatternRepeat={'no-repeat'}
+      fillPatternScaleX={coverImage === true ? imageScale : width / img.width}
+      fillPatternScaleY={coverImage === true ? imageScale : height / img.height}
+      fillPatternOffsetX={
+        translateX !== null && translateX !== undefined ? translateX : 0
+      }
+      fillPatternOffsetY={
+        translateY !== null && translateY !== undefined ? translateY : 0
+      }
     />
   )
 }

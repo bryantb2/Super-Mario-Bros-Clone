@@ -7,14 +7,13 @@ import {
   floorHeight,
 } from '../../gameConfig'
 
-const initialSize = playerSize[1].id;
+const initialSize = playerSize[1].id
 
 const initialState = {
   size: initialSize,
   position: {
     x: 0,
-    y: floorHeight
-        .find(height => height.size === initialSize).floorHeight,
+    y: floorHeight.find((height) => height.size === initialSize).floorHeight,
     movementType: playerMovement.STAND,
     movementDirection: null,
     horizontalVelocity: 0,

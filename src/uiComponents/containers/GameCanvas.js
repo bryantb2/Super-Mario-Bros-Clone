@@ -19,13 +19,14 @@ import {
   convertKeyToAction,
   isDirectionKey,
   isDirectionalEnhancer,
+  getCollisionCoordinates
 } from '../../gameConfig'
 import {
   setPlayerMovementDirection,
   setPlayerMovementType,
 } from '../../boilerplate/actions'
 
-import { GameText } from "../elements";
+import { GameText } from '../elements'
 
 export default (props) => {
   const dispatch = useDispatch()
@@ -60,61 +61,68 @@ export default (props) => {
   const playerHeight = playerDimensions.height * baseUnitHeight
   const playerXPos = x + horizontalVelocity
   const playerYPos = y + verticalVelocity
+  const currentCollisions = getCollisionCoordinates(
+      playerWidth,
+      playerHeight,
+      playerXPos,
+      playerYPos,
+      gameMap
+  );
 
-  useEffect(() => {
+  /*useEffect(() => {
     // todo: handle jump ends, physics calculations, ect.
     const movementTimer = setInterval(() => {
       // check if collision is occurring
       // if ()
     }, renderingData.frameTimeMS)
     return () => clearInterval(movementTimer)
-  }, [movementType, movementDirection])
+  }, [movementType, movementDirection])*/
 
   const handleMove = (e, handleType) => {
-    console.log(playerMovement);
+    console.log(playerMovement)
     /*
+      - Directionals
         - only one direction can be applied at one time
-        - only one movement type can be applied at one time
+        - applying an initial directional results in walk movement ALSO being applied
         - releasing a directional results in a null move
+      - Movement Types
+        - only one movement type can be applied at one time
         - releasing an movement type results in the following:
-            - if jump was released, set to walk, sprint, or crouch
+            - if jump was released, set to walk or sprint
             - if sprint was released, set to walk
             - otherwise set to stand
+      - Misc
+        - jumps cannot be interrupted by other movement types unless:
+          - player is touching floor
         */
     const pressedKey = e.key.toUpperCase()
     if (isDirectionKey(pressedKey)) {
-      // only if begin and pressed key is not the current one
-      if (handleType === 'begin' && pressedKey !== movementDirection) {
+      // set direction and movement if "begin" event AND pressed direction is not already in state
+      if (handleType === 'begin' && movementDirection !== pressedKey) {
         // set direction and initial movement
         dispatch(setPlayerMovementDirection(pressedKey))
         dispatch(setPlayerMovementType(playerMovement.WALK))
       } else if (handleType === 'end' && movementDirection === pressedKey) {
-        // cancel movement and direction
+        // cancel directional
         dispatch(setPlayerMovementDirection(null))
         dispatch(setPlayerMovementType(playerMovement.STAND))
       }
     } else if (isDirectionalEnhancer(pressedKey)) {
-      const convertedAction = convertKeyToAction(pressedKey)
-      const touchingFloor = isTouchingFloor(
-        playerWidth,
-        playerHeight,
-        x,
-        y,
-        gameMap,
-      )
-      if (handleType === 'begin' && movementType !== convertedAction) {
+      const keyEventAction = convertKeyToAction(pressedKey)
+      const touchingFloor = isTouchingFloor(currentCollisions)
+      if (handleType === 'begin' && movementType !== keyEventAction) {
         // set movement action, or block movement if a jump is in progress
         if (movementType !== playerMovement.JUMP && movementDirection != null)
-          dispatch(setPlayerMovementType(convertedAction))
+          dispatch(setPlayerMovementType(keyEventAction))
         // only dispatch jump or crouch movement if player was already touching floor
         else if (
-          (convertedAction === playerMovement.JUMP && touchingFloor) ||
-          convertedAction === playerMovement.CROUCH
+          (keyEventAction === playerMovement.JUMP && touchingFloor) ||
+          keyEventAction === playerMovement.CROUCH
         )
-          dispatch(setPlayerMovementType(convertedAction))
-      } /*else if (
+          dispatch(setPlayerMovementType(keyEventAction))
+      } else if (
         handleType === 'end' &&
-        movementType === convertedAction
+        movementType === keyEventAction
       ) {
         // only if released key is in redux
         if (
@@ -136,7 +144,7 @@ export default (props) => {
           // a player CANNOT move when crouching, so it defaults back to standing
           dispatch(setPlayerMovementType(playerMovement.STAND))
         }
-      }*/
+      }
     }
   }
 
@@ -155,7 +163,7 @@ export default (props) => {
     }
   }, [playerData, levelData])
 
-  console.log(baseUnitHeight);
+  console.log(baseUnitHeight)
 
   return (
     <CanvasBackground imageTranslation={0} image={background}>
@@ -174,12 +182,8 @@ export default (props) => {
                       return (
                         <AnimatedMaterial
                           key={tile.instanceId}
-                          x={
-                            pixelPosition.x
-                          }
-                          y={
-                            pixelPosition.y
-                          }
+                          x={pixelPosition.x}
+                          y={pixelPosition.y}
                           width={baseUnitWidth}
                           height={baseUnitHeight}
                           animationData={tile.materialAnimation}
@@ -201,8 +205,8 @@ export default (props) => {
           translateY={150}
           coverImage={true}
         />
-        <GameText x={0} y={793} text={'Small Player'}/>
-        <GameText x={0} y={760} text={'Large Player'}/>
+        <GameText x={0} y={793} text={'Small Player'} />
+        <GameText x={0} y={760} text={'Large Player'} />
       </Layer>
     </CanvasBackground>
   )
