@@ -20,8 +20,10 @@ const initialState = {
     movementDirection: null,
     horizontalVelocity: 0,
     verticalVelocity: 0,
-    yMoveStartTime: null, // controls vertical acceleration of movements
-    xMoveStartTime: null, // controls horizontal acceleration of movements
+    moveEnhancerStartTime: null, // sprint, and jump acceleration
+    //directionalStartTime: null, // controls walk acceleration
+    //yMoveStartTime: null, // controls vertical acceleration of movements
+    //xMoveStartTime: null, // controls horizontal acceleration of movements
   },
   currentUpgrade: null,
 }
@@ -36,6 +38,11 @@ export default (state = initialState, action) => {
       return newState
     case actionTypes.SET_MOVEMENT_TYPE:
       newState.position.movementType = action.payload
+      // set the start time of the movement
+      newState.position.moveEnhancerStartTime =
+        action.payload === null || action.payload === 'STAND'
+          ? null
+          : Date.now()
       return newState
     case actionTypes.SET_MOVEMENT_DIRECTION:
       newState.position.movementDirection = action.payload
@@ -46,12 +53,12 @@ export default (state = initialState, action) => {
     case actionTypes.SET_HORIZONTAL_VELOCITY:
       newState.position.horizontalVelocity = action.payload
       return newState
-    case actionTypes.SET_Y_MOVE_START_TIME:
+    /*case actionTypes.SET_Y_MOVE_START_TIME:
       newState.position.yMoveStartTime = action.payload
       return newState
     case actionTypes.SET_X_MOVE_START_TIME:
       newState.position.xMoveStartTime = action.payload
-      return newState
+      return newState*/
     case actionTypes.RESET_PLAYER_POSITION:
       newState.position = initialState.position
       return newState

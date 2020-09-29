@@ -89,6 +89,22 @@ export const getMaxYVelocity = (
   else if (verticalVelocity > 0) return physicsData.MAX_JUMP_VELOCITY
   else return 0
 }
+export const getYAcceleration = (previousPosition, currentPosition) => {
+  if (previousPosition === currentPosition) return 0
+  if (previousPosition < currentPosition) return physicsData.JUMP_ACCEL
+  else return physicsData.GRAVITY_ACCEL
+}
+export const getXAcceleration = (movementType) => {
+  const { WALK, SPRINT } = playerMovement
+  switch (movementType) {
+    case WALK:
+      return physicsData.HORIZONTAL_WALK_ACCEL
+    case SPRINT:
+      return physicsData.HORIZONTAL_SPRINT_ACCEL
+    default:
+      return 0
+  }
+}
 
 // collision checker
 export const isTouchingFloor = (collisionCoordinates) => {

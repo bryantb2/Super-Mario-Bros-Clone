@@ -31,7 +31,7 @@ export const setPlayerHorizontalVelocity = (horizontalVelocity) => (dispatch) =>
     payload: horizontalVelocity,
   })
 
-export const setPlayerYMoveStartTime = (startTime) => (dispatch) =>
+/*export const setPlayerYMoveStartTime = (startTime) => (dispatch) =>
   dispatch({
     type: actionTypes.SET_Y_MOVE_START_TIME,
     payload: startTime,
@@ -41,7 +41,7 @@ export const setPlayerXMoveStartTime = (startTime) => (dispatch) =>
   dispatch({
     type: actionTypes.SET_X_MOVE_START_TIME,
     payload: startTime,
-  })
+  })*/
 
 export const resetPlayerPosition = () => (dispatch) =>
   dispatch({ type: actionTypes.RESET_PLAYER_POSITION })

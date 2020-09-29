@@ -25,6 +25,9 @@ import {
   calcVelocityByDisplacement,
   getMaxYVelocity,
   getMaxXVelocity,
+  getXAcceleration,
+  getYAcceleration,
+  calcVelocityByTime,
 } from '../../gameConfig'
 import {
   setPlayerHorizontalVelocity,
@@ -54,8 +57,9 @@ export default (props) => {
       movementDirection,
       horizontalVelocity,
       verticalVelocity,
-      yMoveStartTime,
-      xMoveStartTime,
+      //yMoveStartTime,
+      //xMoveStartTime,
+      moveEnhancerStartTime,
     },
     currentUpgrade,
   } = playerData
@@ -167,7 +171,6 @@ export default (props) => {
     // todo: handle jump ends, physics calculations, ect.
     // check game logic, set velocity, end jumps, ect.
     const gameLoop = setInterval(() => {
-      //console.log('game loop fired')
       // check for lethal collisions
       if (!isAnyCollisionLethal(currentCollisions, gameMap)) {
         // check for directional movement or velocity
@@ -187,6 +190,7 @@ export default (props) => {
           )
 
           // cancel jump if touching floor
+          // todo: create extra condition to check and stop a user that FALLS to the floor
           if (movementType === JUMP && touchingFloor) {
             // only set sprint/walk values if the jump has concluded
             if (isAtWalkingVelocity(horizontalVelocity))
@@ -198,28 +202,13 @@ export default (props) => {
               dispatch(setPlayerMovementType(SPRINT))
           }
 
+          // get maximum possible velocity values
           let maxXVelocity = getMaxXVelocity(movementType),
             maxYVelocity = getMaxYVelocity(
               movementType,
               touchingFloor,
               prevPosition.verticalVelocity,
             )
-          // set horizontal max
-          /*if (movementType === SPRINT)
-            maxXVelocity = physicsData.MAX_SPRINT_VELOCITY
-          if (movementType === WALK)
-            maxXVelocity = physicsData.MAX_WALK_VELOCITY
-          else maxXVelocity = 0*/
-          // set vertical max
-          /*if (
-            movementType === JUMP &&
-            prevPosition.verticalVelocity <= 0 &&
-            !touchingFloor
-          )
-            maxYVelocity = physicsData.MAX_GRAVITY_VELOCITY
-          else if (movementType === JUMP && prevPosition.verticalVelocity > 0)
-            maxYVelocity = physicsData.MAX_JUMP_VELOCITY
-          else maxYVelocity = 0*/
 
           // check for velocity-impeding collisions
           let newY = y,
@@ -235,23 +224,10 @@ export default (props) => {
             newXVelocity = 0
           } else {
             // determine proper acceleration values
-            let xAccel, yAccel // todo: separate y and x accel calculations
-            if (movementType === JUMP) {
-              // set vertical accel value
-              if (prevPosition.y < y && prevPosition.verticalVelocity !== 0)
-                yAccel = physicsData.JUMP_ACCEL
-              else yAccel = physicsData.GRAVITY_ACCEL
-            } else if (movementType === SPRINT)
-              xAccel = physicsData.HORIZONTAL_SPRINT_ACCEL
-            else if (movementType === WALK)
-              xAccel = physicsData.HORIZONTAL_WALK_ACCEL
-            else {
-              xAccel = 0
-              yAccel = 0
-            }
-
+            let xAccel = getXAcceleration(movementType),
+              yAccel = getYAcceleration(prevPosition.y, y)
             // calculate next vertical and horizontal velocity
-            newXVelocity = calcVelocityByDisplacement(
+            /*newXVelocity = calcVelocityByDisplacement(
               horizontalVelocity,
               xAccel,
               x - prevPosition.x,
@@ -260,6 +236,18 @@ export default (props) => {
               verticalVelocity,
               yAccel,
               y - prevPosition.y,
+            )*/
+            const secondsFromMoveStart =
+              (Date.now() - moveEnhancerStartTime) / 1000
+            newXVelocity = calcVelocityByTime(
+              prevPosition.horizontalVelocity,
+              secondsFromMoveStart,
+              xAccel,
+            )
+            newYVelocity = calcVelocityByTime(
+              prevPosition.verticalVelocity,
+              secondsFromMoveStart,
+              yAccel,
             )
             // limit velocities based on calculated maxes
             newXVelocity =
@@ -269,19 +257,19 @@ export default (props) => {
           }
 
           // calc new x,y coordinates
-          newX += newXVelocity
-          newY += newYVelocity
+          newX += newXVelocity * baseUnitWidth
+          newY += newYVelocity * baseUnitHeight
 
           // set new values to redux store
-          setPlayerPosition(newX, newY)
-          setPlayerVerticalVelocity(newYVelocity)
-          setPlayerHorizontalVelocity(newXVelocity)
+          dispatch(setPlayerPosition(newX, newY))
+          dispatch(setPlayerVerticalVelocity(newYVelocity))
+          dispatch(setPlayerHorizontalVelocity(newXVelocity))
 
-          console.log('Values set to redux store')
+          /*console.log('Values set to redux store')
           console.log(newX)
           console.log(newY)
           console.log(newXVelocity)
-          console.log(newYVelocity)
+          console.log(newYVelocity)*/
         }
       } else {
         // mark game over
@@ -290,7 +278,7 @@ export default (props) => {
 
       // set current position values to ref
       prevPositionRef.current = currentPosition
-    }, 1000)
+    }, renderingData.frameTimeMS)
 
     // cleanup effect
     return () => {
