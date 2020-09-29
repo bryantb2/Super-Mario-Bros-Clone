@@ -65,12 +65,36 @@ export const isAtWalkingVelocity = (horizontalVelocity) =>
 export const isAtSprintingVelocity = (horizontalVelocity) =>
   horizontalVelocity > physicsData.MAX_WALK_VELOCITY &&
   horizontalVelocity <= physicsData.MAX_SPRINT_VELOCITY
+export const getMaxXVelocity = (movementType) => {
+  const { WALK, SPRINT } = playerMovement
+  switch (movementType) {
+    case SPRINT:
+      return physicsData.MAX_SPRINT_VELOCITY
+    case WALK:
+      return physicsData.MAX_WALK_VELOCITY
+    default:
+      return 0
+  }
+}
+export const getMaxYVelocity = (
+  movementType,
+  touchingFloor,
+  verticalVelocity,
+) => {
+  const { JUMP } = playerMovement
+  // return zero if jump is not active and there is not vertical velocity
+  if (movementType !== JUMP && verticalVelocity === 0) return 0
+  if (verticalVelocity <= 0 && !touchingFloor)
+    return physicsData.MAX_GRAVITY_VELOCITY
+  else if (verticalVelocity > 0) return physicsData.MAX_JUMP_VELOCITY
+  else return 0
+}
 
 // collision checker
 export const isTouchingFloor = (collisionCoordinates) => {
   // filter collisions for floor value
   const floorCollisions = collisionCoordinates.filter(
-    collision => collision.position === 'BOTTOM',
+    (collision) => collision.position === 'BOTTOM',
   )
   // check that player is touching at least one solid object
   return floorCollisions.length >= 1
@@ -90,7 +114,8 @@ export const getCollisionCoordinates = (
   for (const modelVertex of boxModel) {
     const { x, y, position } = modelVertex
     // determine which direction pixels need to be added
-    let horizontalOffset = 0, verticalOffset = 0
+    let horizontalOffset = 0,
+      verticalOffset = 0
     if (position === 'TOP') {
       verticalOffset = 1
     } else if (position === 'RIGHT') {
@@ -101,7 +126,10 @@ export const getCollisionCoordinates = (
       horizontalOffset = -1
     }
     // get grid tile by coordinates
-    const tileIndexes = findTilePositionByPixel(x + horizontalOffset, y + verticalOffset)
+    const tileIndexes = findTilePositionByPixel(
+      x + horizontalOffset,
+      y + verticalOffset,
+    )
     const gameTile = gameGrid[tileIndexes.x][tileIndexes.y]
     if (gameTile !== null && gameTile !== undefined)
       // add game tile coordinates to collision list
@@ -129,23 +157,23 @@ const buildPlayerBoxModel = (
   // note: origin point for player box is top left, so all calcs must be relative to that corner
   const top = {
     position: 'TOP',
-    x: playerXPos + (playerWidth / 2),
+    x: playerXPos + playerWidth / 2,
     y: playerYPos,
   }
   const right = {
     position: 'RIGHT',
     x: playerXPos + playerWidth,
-    y: playerYPos + (playerHeight / 2),
+    y: playerYPos + playerHeight / 2,
   }
   const bottom = {
     position: 'BOTTOM',
-    x: playerXPos + (playerWidth / 2),
+    x: playerXPos + playerWidth / 2,
     y: playerYPos + playerHeight,
   }
   const left = {
     position: 'LEFT',
     x: playerXPos,
-    y: playerYPos + (playerHeight / 2),
+    y: playerYPos + playerHeight / 2,
   }
   return [top, right, bottom, left]
 }
